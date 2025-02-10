@@ -13,6 +13,12 @@
 		013D3A5C2D392BAC0051C28C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 013D3A5A2D392BAC0051C28C /* Main.storyboard */; };
 		013D3A5E2D392BAD0051C28C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 013D3A5D2D392BAD0051C28C /* Assets.xcassets */; };
 		013D3A612D392BAD0051C28C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 013D3A5F2D392BAD0051C28C /* LaunchScreen.storyboard */; };
+		013D3A6C2D392D370051C28C /* TimerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3A6B2D392D370051C28C /* TimerViewController.swift */; };
+		013D3A6E2D392E0D0051C28C /* TimerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3A6D2D392E0D0051C28C /* TimerViewModel.swift */; };
+		013D3A702D3A5F580051C28C /* DisplayLinkTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3A6F2D3A5F580051C28C /* DisplayLinkTimer.swift */; };
+		013D3A762D4CEA600051C28C /* CircleProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3A752D4CEA600051C28C /* CircleProgressView.swift */; };
+		013D3A782D50F89E0051C28C /* PickerSouceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3A772D50F89E0051C28C /* PickerSouceView.swift */; };
+		013D3A7A2D50F98F0051C28C /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3A792D50F98F0051C28C /* BaseView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +30,12 @@
 		013D3A5D2D392BAD0051C28C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		013D3A602D392BAD0051C28C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		013D3A622D392BAD0051C28C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		013D3A6B2D392D370051C28C /* TimerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerViewController.swift; sourceTree = "<group>"; };
+		013D3A6D2D392E0D0051C28C /* TimerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerViewModel.swift; sourceTree = "<group>"; };
+		013D3A6F2D3A5F580051C28C /* DisplayLinkTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLinkTimer.swift; sourceTree = "<group>"; };
+		013D3A752D4CEA600051C28C /* CircleProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleProgressView.swift; sourceTree = "<group>"; };
+		013D3A772D50F89E0051C28C /* PickerSouceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerSouceView.swift; sourceTree = "<group>"; };
+		013D3A792D50F98F0051C28C /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,15 +68,45 @@
 		013D3A532D392BAC0051C28C /* MLTimer */ = {
 			isa = PBXGroup;
 			children = (
-				013D3A542D392BAC0051C28C /* AppDelegate.swift */,
-				013D3A562D392BAC0051C28C /* SceneDelegate.swift */,
-				013D3A582D392BAC0051C28C /* ViewController.swift */,
+				013D3A682D392BC20051C28C /* Resources */,
+				013D3A692D392BF40051C28C /* Sources */,
+			);
+			path = MLTimer;
+			sourceTree = "<group>";
+		};
+		013D3A682D392BC20051C28C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
 				013D3A5A2D392BAC0051C28C /* Main.storyboard */,
 				013D3A5D2D392BAD0051C28C /* Assets.xcassets */,
 				013D3A5F2D392BAD0051C28C /* LaunchScreen.storyboard */,
 				013D3A622D392BAD0051C28C /* Info.plist */,
 			);
-			path = MLTimer;
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		013D3A692D392BF40051C28C /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				013D3A6A2D392C190051C28C /* Timer */,
+				013D3A542D392BAC0051C28C /* AppDelegate.swift */,
+				013D3A562D392BAC0051C28C /* SceneDelegate.swift */,
+				013D3A582D392BAC0051C28C /* ViewController.swift */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		013D3A6A2D392C190051C28C /* Timer */ = {
+			isa = PBXGroup;
+			children = (
+				013D3A6B2D392D370051C28C /* TimerViewController.swift */,
+				013D3A6D2D392E0D0051C28C /* TimerViewModel.swift */,
+				013D3A6F2D3A5F580051C28C /* DisplayLinkTimer.swift */,
+				013D3A752D4CEA600051C28C /* CircleProgressView.swift */,
+				013D3A772D50F89E0051C28C /* PickerSouceView.swift */,
+				013D3A792D50F98F0051C28C /* BaseView.swift */,
+			);
+			path = Timer;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,8 +180,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				013D3A6E2D392E0D0051C28C /* TimerViewModel.swift in Sources */,
+				013D3A6C2D392D370051C28C /* TimerViewController.swift in Sources */,
+				013D3A702D3A5F580051C28C /* DisplayLinkTimer.swift in Sources */,
+				013D3A762D4CEA600051C28C /* CircleProgressView.swift in Sources */,
 				013D3A592D392BAC0051C28C /* ViewController.swift in Sources */,
 				013D3A552D392BAC0051C28C /* AppDelegate.swift in Sources */,
+				013D3A7A2D50F98F0051C28C /* BaseView.swift in Sources */,
+				013D3A782D50F89E0051C28C /* PickerSouceView.swift in Sources */,
 				013D3A572D392BAC0051C28C /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -288,10 +336,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = MLTimer/Info.plist;
+				INFOPLIST_FILE = MLTimer/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -315,10 +363,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = MLTimer/Info.plist;
+				INFOPLIST_FILE = MLTimer/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIMainStoryboardFile = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
