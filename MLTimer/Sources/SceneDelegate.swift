@@ -14,11 +14,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
-        guard let scene = (scene as? UIWindowScene) else { return }
+        guard let scene  = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: scene)
-        let vm = TimerViewModel()
-        let vc = TimerViewController(viewModel: vm)
-        let nav = UINavigationController(rootViewController: vc)
+        let nav = UINavigationController(rootViewController: TimerScreenBuilder.buildTimerScreen())
+
         window?.rootViewController = nav
         window?.makeKeyAndVisible()
     }

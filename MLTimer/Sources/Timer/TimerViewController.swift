@@ -12,35 +12,25 @@ import Combine
 class TimerViewController: UIViewController {
     
     let viewModel: TimerViewModelProtocol
-    let startPauseButton = UIButton()
-    let stopButton = UIButton()
     
     let mainStackView = UIStackView()
-    
-    let settingsStackView = UIStackView()
-    let workView = PickerSouceView()
-    let restView = PickerSouceView()
-    let roundsView = PickerSouceView()
-    
+    lazy var roundSettingsVC = RoundSettingsViewController(viewModel: viewModel.settingsViewModel)
     let roundPartLable = UILabel()
-    
     let countRoundStackView = UIStackView()
     let roundTitleLable = UILabel()
     let currentRoundLable = UILabel()
     let deviderLable = UILabel()
     let totalRoundsLable = UILabel()
-    
     let timeStackView = UIStackView()
     let minutesLabel = UILabel()
     let colonLabel = UILabel()
     let secondsLabel = UILabel()
-    
     let progressView = CircleProgressView()
-    
     let spacerViewBeforeProgress = UIView()
     let spacerViewAfterProgress = UIView()
-    
     let buttonsStackView = UIStackView()
+    let startPauseButton = UIButton()
+    let stopButton = UIButton()
     var cancelables = Set<AnyCancellable>()
 
     init(viewModel: TimerViewModelProtocol) {
@@ -69,15 +59,10 @@ class TimerViewController: UIViewController {
             }
             .store(in: &cancelables)
         
-        viewModel.workTimePublisher
-            .sink { [unowned self] workTime in
-                workView.value = "\(workTime.minutes.formattedTime) : \(workTime.seconds.formattedTime)"
-            }
-            .store(in: &cancelables)
-        
-        viewModel.restTimePublisher
-            .sink { [unowned self] restTime in
-                restView.value = "\(restTime.minutes.formattedTime) : \(restTime.seconds.formattedTime)"
+        viewModel.settingsViewModel.workTimerPublisher
+            .sink { [unowned self] time in
+                minutesLabel.text = time.minutes.formattedTime
+                secondsLabel.text = time.seconds.formattedTime
             }
             .store(in: &cancelables)
         
@@ -99,16 +84,14 @@ class TimerViewController: UIViewController {
             }
             .store(in: &cancelables)
         
-        viewModel.totalRoundPublisher
-            .sink { [unowned self] n in
-                totalRoundsLable.text = n
-                roundsView.value = n
-            }
-            .store(in: &cancelables)
-        
         viewModel.isContinuePublisher
             .sink { [unowned self] isContinue in
                 startPauseButton.configuration = isContinue == true ? .pause : .play
+            }
+            .store(in: &cancelables)
+        viewModel.totalRoundPublisher
+            .sink { [unowned self] round in
+                totalRoundsLable.text = "\(round)"
             }
             .store(in: &cancelables)
     }
@@ -116,10 +99,10 @@ class TimerViewController: UIViewController {
     func setupHierarchy() {
         
         view.addSubview(mainStackView)
-        mainStackView.addArrangedSubview(settingsStackView)
-        settingsStackView.addArrangedSubview(workView)
-        settingsStackView.addArrangedSubview(restView)
-        settingsStackView.addArrangedSubview(roundsView)
+        self.addChild(roundSettingsVC)
+        mainStackView.addArrangedSubview(roundSettingsVC.view)
+        roundSettingsVC.didMove(toParent: self)
+
         mainStackView.addArrangedSubview(spacerViewBeforeProgress)
         mainStackView.addArrangedSubview(progressView)
         
@@ -171,24 +154,17 @@ class TimerViewController: UIViewController {
         mainStackView.alignment = .center
         mainStackView.axis = .vertical
         mainStackView.spacing = 20
-
-        settingsStackView.alignment = .fill
-        settingsStackView.axis = .horizontal
-        settingsStackView.spacing = 20
-        workView.title = "Work"
-        restView.title = "Rest"
-        roundsView.title = "Rounds"
-
-        roundPartLable.font = UIFont(name: "Apple SD Gothic Neo", size: 30)
-        currentRoundLable.font = UIFont(name: "Apple SD Gothic Neo", size: 20)
-
+        
         countRoundStackView.axis = .horizontal
         countRoundStackView.alignment = .fill
         countRoundStackView.spacing = 20
-        roundTitleLable.text = "ROUND"
-        
-        deviderLable.text = "/"
 
+        roundTitleLable.text = "ROUND"
+        deviderLable.text = "/"
+        roundPartLable.font = UIFont(name: "Apple SD Gothic Neo", size: 30)
+        currentRoundLable.font = UIFont(name: "Apple SD Gothic Neo", size: 20)
+        totalRoundsLable.font = UIFont(name: "Apple SD Gothic Neo", size: 20)
+        
         buttonsStackView.alignment = .fill
         buttonsStackView.axis = .horizontal
         buttonsStackView.spacing = 50

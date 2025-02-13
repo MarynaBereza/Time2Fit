@@ -12,22 +12,23 @@ import QuartzCore
 protocol TimerViewModelProtocol {
 
     var remainingTimePublisher: AnyPublisher<Time, Never> { get }
-    var roundPartPublisher: AnyPublisher<String, Never> { get }
-    var currentNumberRoundPublisher: AnyPublisher<String, Never> { get }
-    var totalRoundPublisher: AnyPublisher<String, Never> { get }
-    var workTimePublisher: AnyPublisher<Time, Never> { get }
-    var restTimePublisher: AnyPublisher<Time, Never> { get }
-    var isContinuePublisher: AnyPublisher<Bool, Never> { get }
     var progressPublisher: AnyPublisher<Double, Never> { get }
-    
+    var roundPartPublisher: AnyPublisher<String, Never> { get }
+    var currentNumberRoundPublisher: AnyPublisher<Int, Never> { get }
+    var isContinuePublisher: AnyPublisher<Bool, Never> { get }
+    var totalRoundPublisher: AnyPublisher<Int, Never> { get }
     func playPause()
     func stop()
+    var settingsViewModel: RoundSettingsViewModelProtocol { get }
 }
 
-struct Time: Equatable {
-    let minutes: Int
-    let seconds: Int
-    
+struct Time: Equatable, Codable {
+    var minutes: Int
+    var seconds: Int
+}
+
+extension Time {
+
     init(seconds: Double) {
         let roundedSeconds = seconds.rounded(.up)
         let min = Int(roundedSeconds / 60)
@@ -38,7 +39,7 @@ struct Time: Equatable {
 }
 
 class TimerViewModel: TimerViewModelProtocol {
-
+    
     enum RoundPart: String {
         case work = "Work"
         case rest = "Rest"
@@ -48,12 +49,22 @@ class TimerViewModel: TimerViewModelProtocol {
     private var isStoppedByUser = false
     private var cancellables = Set<AnyCancellable>()
     let displayLinkTimer = DisplayLinkTimer()
+    var settingsViewModel: RoundSettingsViewModelProtocol { _settingsViewModel }
+    private lazy var _settingsViewModel = RoundSettingsViewModel(router: router)
+    let router: TimerScreenRouterProtocol
     
     @Published private(set) var roundPart: RoundPart = .work
     @Published private(set) var currentNumberRound = 1
-    @Published private(set) var workTime = 6.0
-    @Published private(set) var restTime = 3.0
-    @Published private(set) var totalRounds = 2
+    @Published private(set) var workTime = 0.0
+    @Published private(set) var restTime = 0.0
+    @Published private(set) var totalRounds = 1
+    // MARK: Initialization
+    
+    init(router: TimerScreenRouterProtocol) {
+        self.router = router
+        setupSettings() 
+        self.setupTimer()
+    }
     
     var remainingTimePublisher: AnyPublisher<Time, Never> {
         displayLinkTimer.$remainingTime
@@ -71,7 +82,7 @@ class TimerViewModel: TimerViewModelProtocol {
             .map { Time(seconds: $0) }
             .eraseToAnyPublisher()
     }
-    
+
     var restTimePublisher: AnyPublisher<Time, Never> {
         $restTime
             .map { Time(seconds: $0) }
@@ -90,15 +101,15 @@ class TimerViewModel: TimerViewModelProtocol {
             .eraseToAnyPublisher()
     }
     
-    var currentNumberRoundPublisher: AnyPublisher<String, Never> {
+    var currentNumberRoundPublisher: AnyPublisher<Int, Never> {
         $currentNumberRound
-            .map { "\($0)" }
+            .map { $0 }
             .eraseToAnyPublisher()
     }
     
-    var totalRoundPublisher: AnyPublisher<String, Never> {
+    var totalRoundPublisher: AnyPublisher<Int, Never> {
         $totalRounds
-            .map { "\($0)" }
+            .map { $0 }
             .eraseToAnyPublisher()
     }
     
@@ -109,13 +120,7 @@ class TimerViewModel: TimerViewModelProtocol {
             .debounce(for: 0.1, scheduler: RunLoop.main)
             .eraseToAnyPublisher()
     }
-        
-    // MARK: Initialization
-    
-    init() {
-        setupTimer()
-    }
-    
+
     // MARK: Actions
 
     func playPause() {
@@ -132,6 +137,29 @@ class TimerViewModel: TimerViewModelProtocol {
     }
     
     // MARK: Private methods
+    
+    private func setupSettings() {
+        _settingsViewModel.$work
+            .sink { [unowned self] value in
+                let totalSeconds = value.minutes * 60 + value.seconds
+                workTime = Double(totalSeconds)
+                displayLinkTimer.setup(duration: Double(totalSeconds))
+            }
+            .store(in: &cancellables)
+        _settingsViewModel.$rest
+            .sink { [unowned self] value in
+                let totalSeconds = value.minutes * 60 + value.seconds
+                restTime = Double(totalSeconds)
+                displayLinkTimer.setup(duration: Double(totalSeconds))
+            }
+            .store(in: &cancellables)
+        _settingsViewModel.$round
+            .sink(receiveValue: { [unowned self] round in
+                self.totalRounds = round
+            })
+            .store(in: &cancellables)
+
+    }
     
     private func setupTimer() {
         displayLinkTimer.setup(duration: workTime)
