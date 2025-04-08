@@ -25,6 +25,8 @@ final class CircleProgressView: UIView {
             }
         }
     }
+    
+    var progressColor = UIColor.green.cgColor
     // MARK: - Path
 
     override func layoutSubviews() {
@@ -38,7 +40,7 @@ final class CircleProgressView: UIView {
         shapeLayer.lineWidth = 20
         shapeLayer.lineCap = .round
 
-        shapeLayer.strokeColor = UIColor(red: 0.471, green: 0.627, blue: 0.431, alpha: 1).cgColor
+        shapeLayer.strokeColor = progressColor
         shapeLayer.fillColor = UIColor.clear.cgColor
         shapeLayer.cornerRadius = bounds.width / 2
         shapeLayer.masksToBounds = true

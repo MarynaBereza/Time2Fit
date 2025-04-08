@@ -11,7 +11,9 @@ import UIKit
 class PickerSouceView: BaseView {
 
     private let stackView = UIStackView()
+    private let timeStackView = UIStackView()
     private let titleLabel = UILabel()
+    private let timeImageView = UIImageView()
     private let timeLabel = UILabel()
     var isEnabled = true {
         didSet {
@@ -29,22 +31,32 @@ class PickerSouceView: BaseView {
         set { timeLabel.text = newValue }
     }
     
+    var image: UIImage? {
+        get { timeImageView.image}
+        set { timeImageView.image = newValue }
+    }
+
     var onDidTap: (() -> Void)?
     
     override func setupHierarchy() {
         super.setupHierarchy()
         addSubview(stackView)
+        timeStackView.addArrangedSubview(timeImageView)
+        timeStackView.addArrangedSubview(timeLabel)
         stackView.addArrangedSubview(titleLabel)
-        stackView.addArrangedSubview(timeLabel)
+        stackView.addArrangedSubview(timeStackView)
     }
     
     override func setupLayout() {
         super.setupLayout()
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.topAnchor.constraint(equalTo: topAnchor, constant: 5).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5).isActive = true
-        stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10).isActive = true
-        stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10).isActive = true
+        stackView.topAnchor.constraint(equalTo: topAnchor, constant: 8).isActive = true
+        stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8).isActive = true
+        stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8).isActive = true
+        stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8).isActive = true
+        
+        timeImageView.widthAnchor.constraint(equalToConstant: 20).isActive = true
+        timeImageView.heightAnchor.constraint(equalTo: timeImageView.widthAnchor).isActive = true
     }
     
     override func setupViews() {
@@ -55,20 +67,25 @@ class PickerSouceView: BaseView {
         layer.cornerRadius = 5
         
         stackView.axis = .vertical
-        stackView.alignment = .center
+        stackView.alignment = .leading
+        stackView.spacing = 5
         
-        titleLabel.textColor = .label
+        timeStackView.alignment = .fill
+        timeStackView.axis = .horizontal
+        timeStackView.spacing = 5
+        
+        titleLabel.textColor = .secondaryLabel
         timeLabel.textColor = .label
-        
-        titleLabel.font = UIFont.preferredFont(forTextStyle: .headline)
-        timeLabel.font = UIFont.preferredFont(forTextStyle: .title2)
+        titleLabel.font = UIFont.preferredFont(forTextStyle: .caption1, compatibleWith:  UITraitCollection(legibilityWeight: .bold))
+        timeLabel.font = UIFont.preferredFont(forTextStyle: .headline)
+
+        timeImageView.tintColor = .secondaryLabel
     }
     
     private func updateUI() {
-        backgroundColor = isEnabled ? UIColor(red: 0.471, green: 0.627, blue: 0.431, alpha: 0.5) : .tertiarySystemFill
-        
-        titleLabel.textColor = isEnabled ? .label.withAlphaComponent(0.8) : .label.withAlphaComponent(0.4)
-        timeLabel.textColor = isEnabled ? .label.withAlphaComponent(0.8) : .label.withAlphaComponent(0.4)
+        backgroundColor = isEnabled ? UIColor(red: 0.471, green: 0.627, blue: 0.431, alpha: 0.5) : .systemGray6
+        titleLabel.textColor = isEnabled ? .secondaryLabel : .tertiaryLabel
+        timeLabel.textColor = isEnabled ? .label : .tertiaryLabel
     }
     
     @objc private func handleTap() {

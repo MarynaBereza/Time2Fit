@@ -11,7 +11,6 @@ class TimePickerController: UIViewController {
     
     let viewModel: TimePickerModelProtocol
     let pickerView = UIPickerView()
-    
     init(viewModel: TimePickerModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -23,7 +22,6 @@ class TimePickerController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         setupHierarchy()
         setupLayout()
         view.backgroundColor = .systemBackground
@@ -52,6 +50,7 @@ class TimePickerController: UIViewController {
     
     @objc func buttonAction() {
         self.dismiss(animated: true)
+    
     }
     
     @objc func okAction() {
@@ -76,6 +75,13 @@ extension TimePickerController: UIPickerViewDelegate {
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         viewModel.updateSelectedRow(row, inComponent: component)
+        if row == 0 {
+            let newSelection = viewModel.checkSelection(row: row, comp: component)
+            let newRow = newSelection.row
+            let newComponent = newSelection.component
+            
+            pickerView.selectRow(newRow, inComponent: newComponent, animated: true)
+        }
         viewModel.confirm()
     }
 }

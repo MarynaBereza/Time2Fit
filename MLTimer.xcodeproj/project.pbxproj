@@ -31,6 +31,8 @@
 		013D3AB42D5E0FDF0051C28C /* RoundPickerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3AB32D5E0FDF0051C28C /* RoundPickerModel.swift */; };
 		013D3AB62D5E0FEA0051C28C /* RoundPickerRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3AB52D5E0FEA0051C28C /* RoundPickerRouter.swift */; };
 		013D3AB82D5E10110051C28C /* RoundPickerBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3AB72D5E10110051C28C /* RoundPickerBuilder.swift */; };
+		01D348A32DA5477700DA21D9 /* bell.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 01D348A22DA5477700DA21D9 /* bell.mp3 */; };
+		01D348A52DA5478200DA21D9 /* tick.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 01D348A42DA5478200DA21D9 /* tick.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +62,8 @@
 		013D3AB32D5E0FDF0051C28C /* RoundPickerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundPickerModel.swift; sourceTree = "<group>"; };
 		013D3AB52D5E0FEA0051C28C /* RoundPickerRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundPickerRouter.swift; sourceTree = "<group>"; };
 		013D3AB72D5E10110051C28C /* RoundPickerBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundPickerBuilder.swift; sourceTree = "<group>"; };
+		01D348A22DA5477700DA21D9 /* bell.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = bell.mp3; sourceTree = "<group>"; };
+		01D348A42DA5478200DA21D9 /* tick.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = tick.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +105,8 @@
 		013D3A682D392BC20051C28C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				01D348A22DA5477700DA21D9 /* bell.mp3 */,
+				01D348A42DA5478200DA21D9 /* tick.mp3 */,
 				013D3A5A2D392BAC0051C28C /* Main.storyboard */,
 				013D3A5D2D392BAD0051C28C /* Assets.xcassets */,
 				013D3A5F2D392BAD0051C28C /* LaunchScreen.storyboard */,
@@ -228,6 +234,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				013D3A612D392BAD0051C28C /* LaunchScreen.storyboard in Resources */,
+				01D348A52DA5478200DA21D9 /* tick.mp3 in Resources */,
+				01D348A32DA5477700DA21D9 /* bell.mp3 in Resources */,
 				013D3A5E2D392BAD0051C28C /* Assets.xcassets in Resources */,
 				013D3A5C2D392BAC0051C28C /* Main.storyboard in Resources */,
 			);
@@ -290,6 +298,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -350,6 +359,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -407,6 +417,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7AGKTE77BB;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MLTimer/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -434,6 +445,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7AGKTE77BB;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MLTimer/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

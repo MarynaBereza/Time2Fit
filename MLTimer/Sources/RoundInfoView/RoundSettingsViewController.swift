@@ -73,18 +73,21 @@ class RoundSettingsViewController: UIViewController {
     func setupView() {
         horizontalStackView.alignment = .fill
         horizontalStackView.axis = .horizontal
-        horizontalStackView.spacing = 20
+        horizontalStackView.spacing = 10
         horizontalStackView.distribution = .fillEqually
         
-        workView.title = "Work"
+        workView.title = "WORK"
+        workView.image = UIImage(systemName: "timer")
         workView.onDidTap = { [weak self] in
             self?.viewModel.showWorkTimePicker()
         }
-        restView.title = "Rest"
+        restView.title = "REST"
+        restView.image = UIImage(systemName: "timer")
         restView.onDidTap = { [weak self] in
             self?.viewModel.showRestTimePicker()
         }
-        roundView.title = "Rounds"
+        roundView.title = "ROUNDS"
+        roundView.image = UIImage(systemName: "arrow.2.circlepath")
         roundView.onDidTap = { [weak self] in
             self?.viewModel.showRoundPicker()
         }

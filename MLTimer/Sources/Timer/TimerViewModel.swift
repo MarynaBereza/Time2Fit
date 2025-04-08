@@ -8,9 +8,9 @@
 import Foundation
 import Combine
 import QuartzCore
+import AVFoundation
 
 protocol TimerViewModelProtocol {
-
     var remainingTimePublisher: AnyPublisher<Time, Never> { get }
     var progressPublisher: AnyPublisher<Double, Never> { get }
     var roundPartPublisher: AnyPublisher<String, Never> { get }
@@ -20,6 +20,7 @@ protocol TimerViewModelProtocol {
     func playPause()
     func stop()
     var settingsViewModel: RoundSettingsViewModelProtocol { get }
+    var stopPublisher: AnyPublisher<Bool, Never> { get }
 }
 
 struct Time: Equatable, Codable {
@@ -28,23 +29,22 @@ struct Time: Equatable, Codable {
 }
 
 extension Time {
-
     init(seconds: Double) {
         let roundedSeconds = seconds.rounded(.up)
         let min = Int(roundedSeconds / 60)
-        let sec = Int(roundedSeconds) - min * 60
+        let sec = Int(roundedSeconds) % 60
         self.minutes = min
         self.seconds = sec
     }
 }
 
+enum RoundPart: String {
+    case work = "WORK"
+    case rest = "REST"
+}
+
 class TimerViewModel: TimerViewModelProtocol {
-    
-    enum RoundPart: String {
-        case work = "Work"
-        case rest = "Rest"
-    }
-    
+
     // MARK: State
     private var isStoppedByUser = false
     private var cancellables = Set<AnyCancellable>()
@@ -58,6 +58,13 @@ class TimerViewModel: TimerViewModelProtocol {
     @Published private(set) var workTime = 0.0
     @Published private(set) var restTime = 0.0
     @Published private(set) var totalRounds = 1
+    @Published private(set) var stopTapped = false
+ 
+    var stopPublisher: AnyPublisher<Bool, Never> {
+        $stopTapped
+            .map { $0 }
+            .eraseToAnyPublisher()
+    }
     // MARK: Initialization
     
     init(router: TimerScreenRouterProtocol) {
@@ -68,9 +75,7 @@ class TimerViewModel: TimerViewModelProtocol {
     
     var remainingTimePublisher: AnyPublisher<Time, Never> {
         displayLinkTimer.$remainingTime
-            .filter { $0 != 0 }
             .map {
-                print("TIME = \($0)")
                 return Time(seconds: $0)
             }
             .removeDuplicates()
@@ -150,7 +155,6 @@ class TimerViewModel: TimerViewModelProtocol {
             .sink { [unowned self] value in
                 let totalSeconds = value.minutes * 60 + value.seconds
                 restTime = Double(totalSeconds)
-                displayLinkTimer.setup(duration: Double(totalSeconds))
             }
             .store(in: &cancellables)
         _settingsViewModel.$round
@@ -158,7 +162,6 @@ class TimerViewModel: TimerViewModelProtocol {
                 self.totalRounds = round
             })
             .store(in: &cancellables)
-
     }
     
     private func setupTimer() {
@@ -186,6 +189,7 @@ class TimerViewModel: TimerViewModelProtocol {
                 if (isLastRound && roundPart == .rest) || isStoppedByUser {
                     roundPart = .work
                     currentNumberRound = 1
+                    stopTapped = true
                 }
                 guard !isStoppedByUser else {
                     isStoppedByUser = false

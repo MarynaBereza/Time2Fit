@@ -7,17 +7,15 @@
 
 import UIKit
 import Combine
-
+import AVFoundation
 
 class TimerViewController: UIViewController {
     
     let viewModel: TimerViewModelProtocol
-    
     let mainStackView = UIStackView()
     lazy var roundSettingsVC = RoundSettingsViewController(viewModel: viewModel.settingsViewModel)
     let roundPartLable = UILabel()
     let countRoundStackView = UIStackView()
-    let roundTitleLable = UILabel()
     let currentRoundLable = UILabel()
     let deviderLable = UILabel()
     let totalRoundsLable = UILabel()
@@ -32,7 +30,9 @@ class TimerViewController: UIViewController {
     let startPauseButton = UIButton()
     let stopButton = UIButton()
     var cancelables = Set<AnyCancellable>()
-
+    
+    var player: AVAudioPlayer!
+    
     init(viewModel: TimerViewModelProtocol) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
@@ -44,18 +44,40 @@ class TimerViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupHierarchy()
         setupLayout()
         setupView()
         bindViewModel()
     }
     
+    func playSound(name: String, type: String) {
+        guard let path = Bundle.main.path(forResource: name, ofType: type) else {
+            return }
+        let url = URL(fileURLWithPath: path)
+
+        do {
+            player = try AVAudioPlayer(contentsOf: url)
+            player?.play()
+            
+        } catch let error {
+            print(error.localizedDescription)
+        }
+    }
+    
     func bindViewModel() {
         viewModel.remainingTimePublisher
             .sink { [unowned self] time in
-                minutesLabel.text = time.minutes.formattedTime
-                secondsLabel.text = time.seconds.formattedTime
+                
+                if time.seconds == 3 || time.seconds == 2 || time.seconds == 1 {
+                    playSound(name: "tick", type: "mp3")
+                }
+                if time.seconds == 0 {
+                    playSound(name: "bell", type: "mp3")
+                }
+                if time.seconds != 0 {
+                    minutesLabel.text = time.minutes.formattedTime
+                    secondsLabel.text = time.seconds.formattedTime
+                }
             }
             .store(in: &cancelables)
         
@@ -75,6 +97,9 @@ class TimerViewController: UIViewController {
         viewModel.roundPartPublisher
             .sink { [unowned self] partRound in
                 roundPartLable.text = partRound
+                progressView.progressColor = partRound == RoundPart.work.rawValue ?
+                UIColor(red: 0.471, green: 0.627, blue: 0.431, alpha: 1).cgColor :
+                UIColor.systemPink.cgColor
             }
             .store(in: &cancelables)
         
@@ -89,21 +114,37 @@ class TimerViewController: UIViewController {
                 startPauseButton.configuration = isContinue == true ? .pause : .play
             }
             .store(in: &cancelables)
+        
         viewModel.totalRoundPublisher
             .sink { [unowned self] round in
                 totalRoundsLable.text = "\(round)"
             }
             .store(in: &cancelables)
+        
+        viewModel.stopPublisher
+            .sink { [unowned self] isFinish in
+                if isFinish {
+                    roundSettingsVC.workView.isEnabled = true
+                    roundSettingsVC.restView.isEnabled = true
+                    roundSettingsVC.roundView.isEnabled = true
+                }
+            }
+            .store(in: &cancelables)
     }
     
     func setupHierarchy() {
-        
         view.addSubview(mainStackView)
         self.addChild(roundSettingsVC)
         mainStackView.addArrangedSubview(roundSettingsVC.view)
         roundSettingsVC.didMove(toParent: self)
-
+        
         mainStackView.addArrangedSubview(spacerViewBeforeProgress)
+        mainStackView.addArrangedSubview(countRoundStackView)
+        
+        countRoundStackView.addArrangedSubview(currentRoundLable)
+        countRoundStackView.addArrangedSubview(deviderLable)
+        countRoundStackView.addArrangedSubview(totalRoundsLable)
+
         mainStackView.addArrangedSubview(progressView)
         
         progressView.addSubview(roundPartLable)
@@ -111,12 +152,7 @@ class TimerViewController: UIViewController {
         timeStackView.addArrangedSubview(minutesLabel)
         timeStackView.addArrangedSubview(colonLabel)
         timeStackView.addArrangedSubview(secondsLabel)
-        
-        mainStackView.addArrangedSubview(countRoundStackView)
-        countRoundStackView.addArrangedSubview(roundTitleLable)
-        countRoundStackView.addArrangedSubview(currentRoundLable)
-        countRoundStackView.addArrangedSubview(deviderLable)
-        countRoundStackView.addArrangedSubview(totalRoundsLable)
+
         mainStackView.addArrangedSubview(spacerViewAfterProgress)
         mainStackView.addArrangedSubview(buttonsStackView)
         buttonsStackView.addArrangedSubview(startPauseButton)
@@ -124,19 +160,21 @@ class TimerViewController: UIViewController {
     }
     
     func setupLayout() {
-        
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
         mainStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
         mainStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
+        
+        roundSettingsVC.view.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor).isActive = true
+        roundSettingsVC.view.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor).isActive = true
 
         timeStackView.translatesAutoresizingMaskIntoConstraints = false
         progressView.widthAnchor.constraint(equalTo: progressView.heightAnchor).isActive = true
         progressView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor).isActive = true
 
         roundPartLable.translatesAutoresizingMaskIntoConstraints = false
-        roundPartLable.topAnchor.constraint(equalTo: progressView.topAnchor, constant: 50).isActive = true
+        roundPartLable.bottomAnchor.constraint(equalTo: timeStackView.topAnchor, constant: -20).isActive = true
         roundPartLable.centerXAnchor.constraint(equalTo: progressView.centerXAnchor).isActive = true
         
         timeStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -146,6 +184,7 @@ class TimerViewController: UIViewController {
         buttonsStackView.heightAnchor.constraint(equalToConstant: 70).isActive = true
         startPauseButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
         minutesLabel.widthAnchor.constraint(equalTo: secondsLabel.widthAnchor).isActive = true
+        colonLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         spacerViewAfterProgress.heightAnchor.constraint(equalTo: spacerViewBeforeProgress.heightAnchor, multiplier: 1).isActive = true
     }
     
@@ -159,11 +198,11 @@ class TimerViewController: UIViewController {
         countRoundStackView.alignment = .fill
         countRoundStackView.spacing = 20
 
-        roundTitleLable.text = "ROUND"
         deviderLable.text = "/"
-        roundPartLable.font = UIFont(name: "Apple SD Gothic Neo", size: 30)
-        currentRoundLable.font = UIFont(name: "Apple SD Gothic Neo", size: 20)
-        totalRoundsLable.font = UIFont(name: "Apple SD Gothic Neo", size: 20)
+        roundPartLable.font = UIFont.preferredFont(forTextStyle: .title2)
+        currentRoundLable.font = UIFont.preferredFont(forTextStyle: .largeTitle, compatibleWith: UITraitCollection(legibilityWeight: .bold))
+        totalRoundsLable.font = UIFont.preferredFont(forTextStyle: .title2, compatibleWith: UITraitCollection(legibilityWeight: .bold))
+        deviderLable.font = UIFont.preferredFont(forTextStyle: .title2, compatibleWith: UITraitCollection(legibilityWeight: .bold))
         
         buttonsStackView.alignment = .fill
         buttonsStackView.axis = .horizontal
@@ -175,27 +214,33 @@ class TimerViewController: UIViewController {
         
         timeStackView.alignment = .fill
         timeStackView.axis = .horizontal
-        timeStackView.spacing = 10
+        timeStackView.spacing = 0
         
         minutesLabel.font = UIFont(name: "Apple SD Gothic Neo", size: 90)
-        minutesLabel.textAlignment = .left
+        minutesLabel.textAlignment = .right
         
         colonLabel.text = ":"
         colonLabel.font = UIFont(name: "Apple SD Gothic Neo", size: 90)
         colonLabel.textAlignment = .center
         
         secondsLabel.font = UIFont(name: "Apple SD Gothic Neo", size: 90)
-        secondsLabel.textAlignment = .right
+        secondsLabel.textAlignment = .left
 
         startPauseButton.addTarget(self, action: #selector(handleStartPauseDidTap), for: .touchUpInside)
         stopButton.addTarget(self, action: #selector(handleStopButtonDidTap), for: .touchUpInside)
     }
     
     @objc func handleStartPauseDidTap() {
+        roundSettingsVC.workView.isEnabled = false
+        roundSettingsVC.restView.isEnabled = false
+        roundSettingsVC.roundView.isEnabled = false
         viewModel.playPause()
     }
     
     @objc func handleStopButtonDidTap() {
+        roundSettingsVC.workView.isEnabled = true
+        roundSettingsVC.restView.isEnabled = true
+        roundSettingsVC.roundView.isEnabled = true
         viewModel.stop()
     }
 }

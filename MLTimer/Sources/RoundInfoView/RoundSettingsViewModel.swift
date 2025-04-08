@@ -84,7 +84,7 @@ class RoundSettingsViewModel: RoundSettingsViewModelProtocol {
         if seconds <= 9 {
             formattedSeconds = "0" + formattedSeconds
         }
-        return "\(formattedMins) : \(formattedSeconds)"
+        return "\(formattedMins):\(formattedSeconds)"
     }
     
     func showWorkTimePicker() {
@@ -109,20 +109,19 @@ class RoundSettingsViewModel: RoundSettingsViewModelProtocol {
     }
 }
 
-
 extension UserDefaults {
     
     static var work: Time {
         get {
             guard let data = standard.data(forKey: "kWorkTime") else {
-                return .init(minutes: 0, seconds: 0)
+                return .init(minutes: 0, seconds: 5)
             }
             let value: Time
             do {
                 let decoder = JSONDecoder()
                 value = try decoder.decode(Time.self, from: data)
             } catch {
-                value = .init(minutes: 0, seconds: 0)
+                value = .init(minutes: 0, seconds: 5)
             }
             return value
         }
@@ -140,14 +139,14 @@ extension UserDefaults {
     static var rest: Time {
         get {
             guard let data = standard.data(forKey: "kRestTime") else {
-                return .init(minutes: 0, seconds: 0)
+                return .init(minutes: 0, seconds: 5)
             }
             let value: Time
             do {
                 let decoder = JSONDecoder()
                 value = try decoder.decode(Time.self, from: data)
             } catch {
-                value = .init(minutes: 0, seconds: 0)
+                value = .init(minutes: 0, seconds: 5)
             }
             return value
         }
