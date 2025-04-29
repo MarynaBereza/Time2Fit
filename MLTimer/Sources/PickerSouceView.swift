@@ -50,8 +50,8 @@ class PickerSouceView: BaseView {
     override func setupLayout() {
         super.setupLayout()
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.topAnchor.constraint(equalTo: topAnchor, constant: 8).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8).isActive = true
+        stackView.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
+        stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
         stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8).isActive = true
         stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8).isActive = true
         
@@ -68,7 +68,7 @@ class PickerSouceView: BaseView {
         
         stackView.axis = .vertical
         stackView.alignment = .leading
-        stackView.spacing = 5
+        stackView.spacing = 10
         
         timeStackView.alignment = .fill
         timeStackView.axis = .horizontal
@@ -76,14 +76,14 @@ class PickerSouceView: BaseView {
         
         titleLabel.textColor = .secondaryLabel
         timeLabel.textColor = .label
-        titleLabel.font = UIFont.preferredFont(forTextStyle: .caption1, compatibleWith:  UITraitCollection(legibilityWeight: .bold))
-        timeLabel.font = UIFont.preferredFont(forTextStyle: .headline)
+        titleLabel.font = UIFont.preferredFont(forTextStyle: .callout, compatibleWith:  UITraitCollection(legibilityWeight: .bold))
+        timeLabel.font = UIFont.preferredFont(forTextStyle: .title2, compatibleWith:  UITraitCollection(legibilityWeight: .bold))
 
         timeImageView.tintColor = .secondaryLabel
     }
     
     private func updateUI() {
-        backgroundColor = isEnabled ? UIColor(red: 0.471, green: 0.627, blue: 0.431, alpha: 0.5) : .systemGray6
+        backgroundColor = isEnabled ? .systemFill : .systemGray5
         titleLabel.textColor = isEnabled ? .secondaryLabel : .tertiaryLabel
         timeLabel.textColor = isEnabled ? .label : .tertiaryLabel
     }

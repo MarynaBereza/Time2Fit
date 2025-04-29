@@ -47,15 +47,6 @@ class TimePickerController: UIViewController {
         pickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
         pickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
     }
-    
-    @objc func buttonAction() {
-        self.dismiss(animated: true)
-    
-    }
-    
-    @objc func okAction() {
-        viewModel.confirm()
-    }
 }
 
 extension TimePickerController: UIPickerViewDataSource {

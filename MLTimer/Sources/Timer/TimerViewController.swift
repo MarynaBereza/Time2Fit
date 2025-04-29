@@ -30,8 +30,7 @@ class TimerViewController: UIViewController {
     let startPauseButton = UIButton()
     let stopButton = UIButton()
     var cancelables = Set<AnyCancellable>()
-    
-    var player: AVAudioPlayer!
+    var soundPlayer: AVAudioPlayer?
     
     init(viewModel: TimerViewModelProtocol) {
         self.viewModel = viewModel
@@ -48,39 +47,34 @@ class TimerViewController: UIViewController {
         setupLayout()
         setupView()
         bindViewModel()
+        stopButton.isEnabled = false
     }
     
-    func playSound(name: String, type: String) {
-        guard let path = Bundle.main.path(forResource: name, ofType: type) else {
-            return }
-        let url = URL(fileURLWithPath: path)
-
-        do {
-            player = try AVAudioPlayer(contentsOf: url)
-            player?.play()
-            
-        } catch let error {
-            print(error.localizedDescription)
-        }
+    func playSound(name: String) {
+       soundPlayer = try? AVAudioPlayer(contentsOf: URL(fileURLWithPath: Bundle.main.path(forResource: name, ofType: "mp3")!))
+        soundPlayer?.play()
     }
     
     func bindViewModel() {
-        viewModel.remainingTimePublisher
-            .sink { [unowned self] time in
-                
-                if time.seconds == 3 || time.seconds == 2 || time.seconds == 1 {
-                    playSound(name: "tick", type: "mp3")
-                }
-                if time.seconds == 0 {
-                    playSound(name: "bell", type: "mp3")
-                }
-                if time.seconds != 0 {
-                    minutesLabel.text = time.minutes.formattedTime
-                    secondsLabel.text = time.seconds.formattedTime
-                }
-            }
-            .store(in: &cancelables)
         
+        Publishers.CombineLatest(viewModel.remainingTimePublisher,
+                                 viewModel.roundPartPublisher)
+        .sink { [unowned self] time, part in
+            if time.seconds == 0  {
+                if part == RoundPart.work.rawValue {
+                    print("movies\(part)")
+                    playSound(name: "rest")
+                } else if part == RoundPart.rest.rawValue {
+                    print("movies\(part)")
+                    playSound(name: "bell")
+                }
+            } else {
+                minutesLabel.text = time.minutes.formattedTime
+                secondsLabel.text = time.seconds.formattedTime
+            }
+        }
+        .store(in: &cancelables)
+  
         viewModel.settingsViewModel.workTimerPublisher
             .sink { [unowned self] time in
                 minutesLabel.text = time.minutes.formattedTime
@@ -98,8 +92,7 @@ class TimerViewController: UIViewController {
             .sink { [unowned self] partRound in
                 roundPartLable.text = partRound
                 progressView.progressColor = partRound == RoundPart.work.rawValue ?
-                UIColor(red: 0.471, green: 0.627, blue: 0.431, alpha: 1).cgColor :
-                UIColor.systemPink.cgColor
+                UIColor(resource: .accent).cgColor : UIColor(resource: .stop).cgColor
             }
             .store(in: &cancelables)
         
@@ -127,6 +120,7 @@ class TimerViewController: UIViewController {
                     roundSettingsVC.workView.isEnabled = true
                     roundSettingsVC.restView.isEnabled = true
                     roundSettingsVC.roundView.isEnabled = true
+                    stopButton.isEnabled = false
                 }
             }
             .store(in: &cancelables)
@@ -180,34 +174,35 @@ class TimerViewController: UIViewController {
         timeStackView.translatesAutoresizingMaskIntoConstraints = false
         timeStackView.centerYAnchor.constraint(equalTo: progressView.centerYAnchor).isActive = true
         timeStackView.centerXAnchor.constraint(equalTo: progressView.centerXAnchor).isActive = true
-        
-        buttonsStackView.heightAnchor.constraint(equalToConstant: 70).isActive = true
-        startPauseButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
+
+        startPauseButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        startPauseButton.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        stopButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
+        stopButton.heightAnchor.constraint(equalToConstant: 70).isActive = true
+ 
         minutesLabel.widthAnchor.constraint(equalTo: secondsLabel.widthAnchor).isActive = true
         colonLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
         spacerViewAfterProgress.heightAnchor.constraint(equalTo: spacerViewBeforeProgress.heightAnchor, multiplier: 1).isActive = true
     }
     
     func setupView() {
-        view.backgroundColor = UIColor.systemBackground
+        view.backgroundColor = UIColor.secondarySystemBackground
         mainStackView.alignment = .center
         mainStackView.axis = .vertical
-        mainStackView.spacing = 20
         
         countRoundStackView.axis = .horizontal
         countRoundStackView.alignment = .fill
         countRoundStackView.spacing = 20
 
         deviderLable.text = "/"
-        roundPartLable.font = UIFont.preferredFont(forTextStyle: .title2)
+        roundPartLable.font = UIFont.preferredFont(forTextStyle: .title1)
         currentRoundLable.font = UIFont.preferredFont(forTextStyle: .largeTitle, compatibleWith: UITraitCollection(legibilityWeight: .bold))
         totalRoundsLable.font = UIFont.preferredFont(forTextStyle: .title2, compatibleWith: UITraitCollection(legibilityWeight: .bold))
         deviderLable.font = UIFont.preferredFont(forTextStyle: .title2, compatibleWith: UITraitCollection(legibilityWeight: .bold))
         
-        buttonsStackView.alignment = .fill
+        buttonsStackView.alignment = .center
         buttonsStackView.axis = .horizontal
         buttonsStackView.spacing = 50
-        buttonsStackView.distribution = .fillEqually
         
         startPauseButton.configuration = .play
         stopButton.configuration = .stop
@@ -234,6 +229,7 @@ class TimerViewController: UIViewController {
         roundSettingsVC.workView.isEnabled = false
         roundSettingsVC.restView.isEnabled = false
         roundSettingsVC.roundView.isEnabled = false
+        stopButton.isEnabled = true
         viewModel.playPause()
     }
     
@@ -242,6 +238,7 @@ class TimerViewController: UIViewController {
         roundSettingsVC.restView.isEnabled = true
         roundSettingsVC.roundView.isEnabled = true
         viewModel.stop()
+        stopButton.isEnabled = false
     }
 }
 
@@ -250,9 +247,10 @@ extension UIButton.Configuration {
     static var play: Self {
         var config = Self.borderedProminent()
         config.image = .init(systemName: "play.fill")
-        config.preferredSymbolConfigurationForImage = .init(pointSize: 30)
+        config.preferredSymbolConfigurationForImage = .init(pointSize: 40)
         config.baseForegroundColor = .white
-        config.baseBackgroundColor = UIColor(red: 0.471, green: 0.627, blue: 0.431, alpha: 1)
+        config.baseBackgroundColor = UIColor(resource: .accent)
+        
         config.cornerStyle = .capsule
         return config
     }
@@ -260,9 +258,9 @@ extension UIButton.Configuration {
     static var pause: Self {
         var config = Self.borderedProminent()
         config.image = .init(systemName: "pause.fill")
-        config.preferredSymbolConfigurationForImage = .init(pointSize: 30)
+        config.preferredSymbolConfigurationForImage = .init(pointSize: 40)
         config.baseForegroundColor = .white
-        config.baseBackgroundColor = UIColor(red: 0.471, green: 0.627, blue: 0.431, alpha: 1)
+        config.baseBackgroundColor = UIColor(resource: .accent)
         config.cornerStyle = .capsule
         return config
     }
@@ -272,7 +270,7 @@ extension UIButton.Configuration {
         config.image = .init(systemName: "stop.fill")
         config.preferredSymbolConfigurationForImage = .init(pointSize: 30)
         config.baseForegroundColor = .white
-        config.baseBackgroundColor = .systemPink.withAlphaComponent(0.8)
+        config.baseBackgroundColor = UIColor(resource: .stop)
         config.cornerStyle = .capsule
         return config
     }

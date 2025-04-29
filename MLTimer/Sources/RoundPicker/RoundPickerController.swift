@@ -27,7 +27,6 @@ class RoundPickerController: UIViewController {
 
         setupHierarchy()
         setupLayout()
-        setupView()
         view.backgroundColor = .systemBackground
         pickerView.delegate = self
         pickerView.dataSource = self
@@ -50,20 +49,6 @@ class RoundPickerController: UIViewController {
         pickerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
         pickerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
     }
-    
-    func setupView() {
-//        pickerStackView.alignment = .fill
-//        pickerStackView.axis = .vertical
-//        pickerStackView.spacing = 10
-    }
-    
-    @objc func buttonAction() {
-        self.dismiss(animated: true)
-    }
-    
-    @objc func okAction() {
-//        viewModel.confirm()
-    }
 }
 
 extension RoundPickerController: UIPickerViewDataSource {
@@ -79,7 +64,6 @@ extension RoundPickerController: UIPickerViewDataSource {
 extension RoundPickerController: UIPickerViewDelegate {
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
             return "\(viewModel.rounds[row])"
-
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {

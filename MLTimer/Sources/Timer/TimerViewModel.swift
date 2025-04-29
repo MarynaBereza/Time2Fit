@@ -75,9 +75,7 @@ class TimerViewModel: TimerViewModelProtocol {
     
     var remainingTimePublisher: AnyPublisher<Time, Never> {
         displayLinkTimer.$remainingTime
-            .map {
-                return Time(seconds: $0)
-            }
+            .map { Time(seconds: $0) }
             .removeDuplicates()
             .eraseToAnyPublisher()
     }

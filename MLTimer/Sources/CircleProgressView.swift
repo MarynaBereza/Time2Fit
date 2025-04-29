@@ -26,7 +26,7 @@ final class CircleProgressView: UIView {
         }
     }
     
-    var progressColor = UIColor.green.cgColor
+    var progressColor = UIColor(resource: .accent).cgColor
     // MARK: - Path
 
     override func layoutSubviews() {

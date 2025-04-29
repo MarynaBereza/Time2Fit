@@ -80,9 +80,7 @@ class DisplayLinkTimer {
             stopDisplayLink()
             elapsedTime = duration /// clamp the elapsed time to the animation length
         }
-        
         remainingTime = duration - elapsedTime
-        
         let progress = elapsedTime / duration
         self.progress = progress
         if progress == 1 {
