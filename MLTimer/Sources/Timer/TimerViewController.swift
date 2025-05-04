@@ -29,7 +29,7 @@ class TimerViewController: UIViewController {
     let buttonsStackView = UIStackView()
     let startPauseButton = UIButton()
     let stopButton = UIButton()
-    var cancelables = Set<AnyCancellable>()
+    var cancellables = Set<AnyCancellable>()
     var soundPlayer: AVAudioPlayer?
     
     init(viewModel: TimerViewModelProtocol) {
@@ -60,7 +60,7 @@ class TimerViewController: UIViewController {
         Publishers.CombineLatest(viewModel.remainingTimePublisher,
                                  viewModel.roundPartPublisher)
         .sink { [unowned self] time, part in
-            if time.seconds == 0  {
+            if time.seconds == 0 && time.minutes == 0 {
                 if part == RoundPart.work.rawValue {
                     print("movies\(part)")
                     playSound(name: "rest")
@@ -73,20 +73,20 @@ class TimerViewController: UIViewController {
                 secondsLabel.text = time.seconds.formattedTime
             }
         }
-        .store(in: &cancelables)
+        .store(in: &cancellables)
   
         viewModel.settingsViewModel.workTimerPublisher
             .sink { [unowned self] time in
                 minutesLabel.text = time.minutes.formattedTime
                 secondsLabel.text = time.seconds.formattedTime
             }
-            .store(in: &cancelables)
+            .store(in: &cancellables)
         
         viewModel.progressPublisher
             .sink { [unowned self] progress in
                 progressView.progress = progress
             }
-            .store(in: &cancelables)
+            .store(in: &cancellables)
         
         viewModel.roundPartPublisher
             .sink { [unowned self] partRound in
@@ -94,25 +94,25 @@ class TimerViewController: UIViewController {
                 progressView.progressColor = partRound == RoundPart.work.rawValue ?
                 UIColor(resource: .accent).cgColor : UIColor(resource: .stop).cgColor
             }
-            .store(in: &cancelables)
+            .store(in: &cancellables)
         
         viewModel.currentNumberRoundPublisher
             .sink { [unowned self] currentRound in
                 currentRoundLable.text = "\(currentRound)"
             }
-            .store(in: &cancelables)
+            .store(in: &cancellables)
         
         viewModel.isContinuePublisher
             .sink { [unowned self] isContinue in
                 startPauseButton.configuration = isContinue == true ? .pause : .play
             }
-            .store(in: &cancelables)
+            .store(in: &cancellables)
         
         viewModel.totalRoundPublisher
             .sink { [unowned self] round in
                 totalRoundsLable.text = "\(round)"
             }
-            .store(in: &cancelables)
+            .store(in: &cancellables)
         
         viewModel.stopPublisher
             .sink { [unowned self] isFinish in
@@ -123,7 +123,7 @@ class TimerViewController: UIViewController {
                     stopButton.isEnabled = false
                 }
             }
-            .store(in: &cancelables)
+            .store(in: &cancellables)
     }
     
     func setupHierarchy() {

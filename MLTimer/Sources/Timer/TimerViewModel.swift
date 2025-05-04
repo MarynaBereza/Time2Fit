@@ -9,6 +9,7 @@ import Foundation
 import Combine
 import QuartzCore
 import AVFoundation
+import UIKit
 
 protocol TimerViewModelProtocol {
     var remainingTimePublisher: AnyPublisher<Time, Never> { get }
@@ -71,6 +72,14 @@ class TimerViewModel: TimerViewModelProtocol {
         self.router = router
         setupSettings() 
         self.setupTimer()
+        
+        NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)
+            .sink { [unowned self] _ in
+                if displayLinkTimer.state == .started {
+                    displayLinkTimer.pause()
+                }
+            }
+            .store(in: &cancellables)
     }
     
     var remainingTimePublisher: AnyPublisher<Time, Never> {
