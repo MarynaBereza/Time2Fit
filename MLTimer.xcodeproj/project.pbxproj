@@ -3,68 +3,26 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 70;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		011727232DA68B90005B19AF /* bell.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 011727222DA68B90005B19AF /* bell.mp3 */; };
-		011727252DBF7F74005B19AF /* rest.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 011727242DBF7F74005B19AF /* rest.mp3 */; };
-		013D3A552D392BAC0051C28C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3A542D392BAC0051C28C /* AppDelegate.swift */; };
-		013D3A572D392BAC0051C28C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3A562D392BAC0051C28C /* SceneDelegate.swift */; };
-		013D3A5C2D392BAC0051C28C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 013D3A5A2D392BAC0051C28C /* Main.storyboard */; };
-		013D3A5E2D392BAD0051C28C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 013D3A5D2D392BAD0051C28C /* Assets.xcassets */; };
-		013D3A612D392BAD0051C28C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 013D3A5F2D392BAD0051C28C /* LaunchScreen.storyboard */; };
-		013D3A6C2D392D370051C28C /* TimerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3A6B2D392D370051C28C /* TimerViewController.swift */; };
-		013D3A6E2D392E0D0051C28C /* TimerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3A6D2D392E0D0051C28C /* TimerViewModel.swift */; };
-		013D3A702D3A5F580051C28C /* DisplayLinkTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3A6F2D3A5F580051C28C /* DisplayLinkTimer.swift */; };
-		013D3A762D4CEA600051C28C /* CircleProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3A752D4CEA600051C28C /* CircleProgressView.swift */; };
-		013D3A782D50F89E0051C28C /* PickerSouceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3A772D50F89E0051C28C /* PickerSouceView.swift */; };
-		013D3A7A2D50F98F0051C28C /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3A792D50F98F0051C28C /* BaseView.swift */; };
-		013D3A9E2D5C89B20051C28C /* TimePickerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3A9D2D5C89B20051C28C /* TimePickerModel.swift */; };
-		013D3AA02D5C89C00051C28C /* TimePickerRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3A9F2D5C89C00051C28C /* TimePickerRouter.swift */; };
-		013D3AA22D5C89CC0051C28C /* TimePickerBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3AA12D5C89CC0051C28C /* TimePickerBuilder.swift */; };
-		013D3AA62D5C8A4E0051C28C /* TimePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3AA52D5C8A4E0051C28C /* TimePickerController.swift */; };
-		013D3AA92D5C8F560051C28C /* RoundSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3AA82D5C8F560051C28C /* RoundSettingsViewController.swift */; };
-		013D3AAB2D5C8F630051C28C /* RoundSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3AAA2D5C8F630051C28C /* RoundSettingsViewModel.swift */; };
-		013D3AAD2D5C8FD20051C28C /* TimerScreenRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3AAC2D5C8FD20051C28C /* TimerScreenRouter.swift */; };
-		013D3AAF2D5C8FE10051C28C /* TimerScreenBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3AAE2D5C8FE10051C28C /* TimerScreenBuilder.swift */; };
-		013D3AB22D5E0FD20051C28C /* RoundPickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3AB12D5E0FD20051C28C /* RoundPickerController.swift */; };
-		013D3AB42D5E0FDF0051C28C /* RoundPickerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3AB32D5E0FDF0051C28C /* RoundPickerModel.swift */; };
-		013D3AB62D5E0FEA0051C28C /* RoundPickerRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3AB52D5E0FEA0051C28C /* RoundPickerRouter.swift */; };
-		013D3AB82D5E10110051C28C /* RoundPickerBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013D3AB72D5E10110051C28C /* RoundPickerBuilder.swift */; };
-		01D348A52DA5478200DA21D9 /* tick.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 01D348A42DA5478200DA21D9 /* tick.mp3 */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXFileReference section */
-		011727222DA68B90005B19AF /* bell.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = bell.mp3; sourceTree = "<group>"; };
-		011727242DBF7F74005B19AF /* rest.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = rest.mp3; sourceTree = "<group>"; };
 		013D3A512D392BAC0051C28C /* MLTimer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MLTimer.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		013D3A542D392BAC0051C28C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		013D3A562D392BAC0051C28C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		013D3A5B2D392BAC0051C28C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		013D3A5D2D392BAD0051C28C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		013D3A602D392BAD0051C28C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		013D3A622D392BAD0051C28C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		013D3A6B2D392D370051C28C /* TimerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerViewController.swift; sourceTree = "<group>"; };
-		013D3A6D2D392E0D0051C28C /* TimerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerViewModel.swift; sourceTree = "<group>"; };
-		013D3A6F2D3A5F580051C28C /* DisplayLinkTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLinkTimer.swift; sourceTree = "<group>"; };
-		013D3A752D4CEA600051C28C /* CircleProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleProgressView.swift; sourceTree = "<group>"; };
-		013D3A772D50F89E0051C28C /* PickerSouceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerSouceView.swift; sourceTree = "<group>"; };
-		013D3A792D50F98F0051C28C /* BaseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
-		013D3A9D2D5C89B20051C28C /* TimePickerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerModel.swift; sourceTree = "<group>"; };
-		013D3A9F2D5C89C00051C28C /* TimePickerRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerRouter.swift; sourceTree = "<group>"; };
-		013D3AA12D5C89CC0051C28C /* TimePickerBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerBuilder.swift; sourceTree = "<group>"; };
-		013D3AA52D5C8A4E0051C28C /* TimePickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimePickerController.swift; sourceTree = "<group>"; };
-		013D3AA82D5C8F560051C28C /* RoundSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundSettingsViewController.swift; sourceTree = "<group>"; };
-		013D3AAA2D5C8F630051C28C /* RoundSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundSettingsViewModel.swift; sourceTree = "<group>"; };
-		013D3AAC2D5C8FD20051C28C /* TimerScreenRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerScreenRouter.swift; sourceTree = "<group>"; };
-		013D3AAE2D5C8FE10051C28C /* TimerScreenBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerScreenBuilder.swift; sourceTree = "<group>"; };
-		013D3AB12D5E0FD20051C28C /* RoundPickerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundPickerController.swift; sourceTree = "<group>"; };
-		013D3AB32D5E0FDF0051C28C /* RoundPickerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundPickerModel.swift; sourceTree = "<group>"; };
-		013D3AB52D5E0FEA0051C28C /* RoundPickerRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundPickerRouter.swift; sourceTree = "<group>"; };
-		013D3AB72D5E10110051C28C /* RoundPickerBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundPickerBuilder.swift; sourceTree = "<group>"; };
-		01D348A42DA5478200DA21D9 /* tick.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = tick.mp3; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		013C35952DC8CE21006512CF /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Resources/Info.plist,
+			);
+			target = 013D3A502D392BAC0051C28C /* MLTimer */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		013C35762DC8CE21006512CF /* MLTimer */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (013C35952DC8CE21006512CF /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = MLTimer; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		013D3A4E2D392BAC0051C28C /* Frameworks */ = {
@@ -80,7 +38,7 @@
 		013D3A482D392BAC0051C28C = {
 			isa = PBXGroup;
 			children = (
-				013D3A532D392BAC0051C28C /* MLTimer */,
+				013C35762DC8CE21006512CF /* MLTimer */,
 				013D3A522D392BAC0051C28C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -91,88 +49,6 @@
 				013D3A512D392BAC0051C28C /* MLTimer.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		013D3A532D392BAC0051C28C /* MLTimer */ = {
-			isa = PBXGroup;
-			children = (
-				013D3A682D392BC20051C28C /* Resources */,
-				013D3A692D392BF40051C28C /* Sources */,
-			);
-			path = MLTimer;
-			sourceTree = "<group>";
-		};
-		013D3A682D392BC20051C28C /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				011727242DBF7F74005B19AF /* rest.mp3 */,
-				01D348A42DA5478200DA21D9 /* tick.mp3 */,
-				011727222DA68B90005B19AF /* bell.mp3 */,
-				013D3A5D2D392BAD0051C28C /* Assets.xcassets */,
-				013D3A622D392BAD0051C28C /* Info.plist */,
-				013D3A5A2D392BAC0051C28C /* Main.storyboard */,
-				013D3A5F2D392BAD0051C28C /* LaunchScreen.storyboard */,
-			);
-			path = Resources;
-			sourceTree = "<group>";
-		};
-		013D3A692D392BF40051C28C /* Sources */ = {
-			isa = PBXGroup;
-			children = (
-				013D3A6F2D3A5F580051C28C /* DisplayLinkTimer.swift */,
-				013D3A752D4CEA600051C28C /* CircleProgressView.swift */,
-				013D3A772D50F89E0051C28C /* PickerSouceView.swift */,
-				013D3A792D50F98F0051C28C /* BaseView.swift */,
-				013D3A6A2D392C190051C28C /* Timer */,
-				013D3AA72D5C8F490051C28C /* RoundInfoView */,
-				013D3A9A2D5C89860051C28C /* TimePicker */,
-				013D3AB02D5E0F9B0051C28C /* RoundPicker */,
-				013D3A542D392BAC0051C28C /* AppDelegate.swift */,
-				013D3A562D392BAC0051C28C /* SceneDelegate.swift */,
-			);
-			path = Sources;
-			sourceTree = "<group>";
-		};
-		013D3A6A2D392C190051C28C /* Timer */ = {
-			isa = PBXGroup;
-			children = (
-				013D3A6B2D392D370051C28C /* TimerViewController.swift */,
-				013D3A6D2D392E0D0051C28C /* TimerViewModel.swift */,
-				013D3AAC2D5C8FD20051C28C /* TimerScreenRouter.swift */,
-				013D3AAE2D5C8FE10051C28C /* TimerScreenBuilder.swift */,
-			);
-			path = Timer;
-			sourceTree = "<group>";
-		};
-		013D3A9A2D5C89860051C28C /* TimePicker */ = {
-			isa = PBXGroup;
-			children = (
-				013D3AA52D5C8A4E0051C28C /* TimePickerController.swift */,
-				013D3A9D2D5C89B20051C28C /* TimePickerModel.swift */,
-				013D3A9F2D5C89C00051C28C /* TimePickerRouter.swift */,
-				013D3AA12D5C89CC0051C28C /* TimePickerBuilder.swift */,
-			);
-			path = TimePicker;
-			sourceTree = "<group>";
-		};
-		013D3AA72D5C8F490051C28C /* RoundInfoView */ = {
-			isa = PBXGroup;
-			children = (
-				013D3AA82D5C8F560051C28C /* RoundSettingsViewController.swift */,
-				013D3AAA2D5C8F630051C28C /* RoundSettingsViewModel.swift */,
-			);
-			path = RoundInfoView;
-			sourceTree = "<group>";
-		};
-		013D3AB02D5E0F9B0051C28C /* RoundPicker */ = {
-			isa = PBXGroup;
-			children = (
-				013D3AB12D5E0FD20051C28C /* RoundPickerController.swift */,
-				013D3AB32D5E0FDF0051C28C /* RoundPickerModel.swift */,
-				013D3AB52D5E0FEA0051C28C /* RoundPickerRouter.swift */,
-				013D3AB72D5E10110051C28C /* RoundPickerBuilder.swift */,
-			);
-			path = RoundPicker;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -189,6 +65,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				013C35762DC8CE21006512CF /* MLTimer */,
 			);
 			name = MLTimer;
 			productName = MLTimer;
@@ -233,12 +112,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				013D3A612D392BAD0051C28C /* LaunchScreen.storyboard in Resources */,
-				011727232DA68B90005B19AF /* bell.mp3 in Resources */,
-				011727252DBF7F74005B19AF /* rest.mp3 in Resources */,
-				01D348A52DA5478200DA21D9 /* tick.mp3 in Resources */,
-				013D3A5E2D392BAD0051C28C /* Assets.xcassets in Resources */,
-				013D3A5C2D392BAC0051C28C /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,49 +122,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				013D3A6E2D392E0D0051C28C /* TimerViewModel.swift in Sources */,
-				013D3AB62D5E0FEA0051C28C /* RoundPickerRouter.swift in Sources */,
-				013D3A6C2D392D370051C28C /* TimerViewController.swift in Sources */,
-				013D3A9E2D5C89B20051C28C /* TimePickerModel.swift in Sources */,
-				013D3A702D3A5F580051C28C /* DisplayLinkTimer.swift in Sources */,
-				013D3AB42D5E0FDF0051C28C /* RoundPickerModel.swift in Sources */,
-				013D3AAD2D5C8FD20051C28C /* TimerScreenRouter.swift in Sources */,
-				013D3AAF2D5C8FE10051C28C /* TimerScreenBuilder.swift in Sources */,
-				013D3AB22D5E0FD20051C28C /* RoundPickerController.swift in Sources */,
-				013D3A762D4CEA600051C28C /* CircleProgressView.swift in Sources */,
-				013D3AB82D5E10110051C28C /* RoundPickerBuilder.swift in Sources */,
-				013D3AA62D5C8A4E0051C28C /* TimePickerController.swift in Sources */,
-				013D3AA22D5C89CC0051C28C /* TimePickerBuilder.swift in Sources */,
-				013D3AA92D5C8F560051C28C /* RoundSettingsViewController.swift in Sources */,
-				013D3AA02D5C89C00051C28C /* TimePickerRouter.swift in Sources */,
-				013D3A552D392BAC0051C28C /* AppDelegate.swift in Sources */,
-				013D3AAB2D5C8F630051C28C /* RoundSettingsViewModel.swift in Sources */,
-				013D3A7A2D50F98F0051C28C /* BaseView.swift in Sources */,
-				013D3A782D50F89E0051C28C /* PickerSouceView.swift in Sources */,
-				013D3A572D392BAC0051C28C /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		013D3A5A2D392BAC0051C28C /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				013D3A5B2D392BAC0051C28C /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		013D3A5F2D392BAD0051C28C /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				013D3A602D392BAD0051C28C /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		013D3A632D392BAD0051C28C /* Debug */ = {
@@ -426,6 +260,7 @@
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -455,6 +290,7 @@
 				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

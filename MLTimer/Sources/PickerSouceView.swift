@@ -36,6 +36,11 @@ class PickerSouceView: BaseView {
         set { timeImageView.image = newValue }
     }
 
+    var color: UIColor? {
+        get { timeImageView.tintColor}
+        set { timeImageView.tintColor = newValue }
+    }
+    
     var onDidTap: (() -> Void)?
     
     override func setupHierarchy() {
@@ -50,10 +55,10 @@ class PickerSouceView: BaseView {
     override func setupLayout() {
         super.setupLayout()
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.topAnchor.constraint(equalTo: topAnchor, constant: 10).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
-        stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8).isActive = true
-        stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8).isActive = true
+        stackView.topAnchor.constraint(equalTo: topAnchor, constant: 6).isActive = true
+        stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -6).isActive = true
+        stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -6).isActive = true
+        stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 6).isActive = true
         
         timeImageView.widthAnchor.constraint(equalToConstant: 20).isActive = true
         timeImageView.heightAnchor.constraint(equalTo: timeImageView.widthAnchor).isActive = true
@@ -68,7 +73,7 @@ class PickerSouceView: BaseView {
         
         stackView.axis = .vertical
         stackView.alignment = .leading
-        stackView.spacing = 10
+        stackView.spacing = 5
         
         timeStackView.alignment = .fill
         timeStackView.axis = .horizontal
@@ -76,10 +81,8 @@ class PickerSouceView: BaseView {
         
         titleLabel.textColor = .secondaryLabel
         timeLabel.textColor = .label
-        titleLabel.font = UIFont.preferredFont(forTextStyle: .callout, compatibleWith:  UITraitCollection(legibilityWeight: .bold))
-        timeLabel.font = UIFont.preferredFont(forTextStyle: .title2, compatibleWith:  UITraitCollection(legibilityWeight: .bold))
-
-        timeImageView.tintColor = .secondaryLabel
+        titleLabel.font = UIFont.preferredFont(forTextStyle: .caption1, compatibleWith:  UITraitCollection(legibilityWeight: .regular))
+        timeLabel.font = UIFont.preferredFont(forTextStyle: .headline, compatibleWith:  UITraitCollection(legibilityWeight: .regular))
     }
     
     private func updateUI() {

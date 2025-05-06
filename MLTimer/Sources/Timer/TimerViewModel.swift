@@ -24,7 +24,7 @@ protocol TimerViewModelProtocol {
     var stopPublisher: AnyPublisher<Bool, Never> { get }
 }
 
-struct Time: Equatable, Codable {
+struct Time: Equatable, Codable, Hashable {
     var minutes: Int
     var seconds: Int
 }
@@ -140,12 +140,14 @@ class TimerViewModel: TimerViewModelProtocol {
             displayLinkTimer.pause()
         } else {
             displayLinkTimer.start()
+            _settingsViewModel.disable(true)
         }
     }
         
     func stop() {
         isStoppedByUser = true
         displayLinkTimer.setup(duration: workTime)
+        _settingsViewModel.disable(false)
     }
     
     // MARK: Private methods

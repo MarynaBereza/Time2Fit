@@ -7,10 +7,12 @@
 
 import Foundation
 import Combine
+
 protocol RoundSettingsViewModelProtocol {
     func showWorkTimePicker()
     func showRestTimePicker()
     func showRoundPicker()
+    func updateCurrentSet(to set: InfoSetData) 
     
     var workTimePublisher: AnyPublisher<String, Never> { get }
     var restTimePublisher: AnyPublisher<String, Never> { get }
@@ -18,6 +20,12 @@ protocol RoundSettingsViewModelProtocol {
     
     var workTimerPublisher: AnyPublisher<Time, Never> { get }
     var roundDataPublisher: AnyPublisher<Int, Never> { get }
+    
+    var isEnabledPublisher: AnyPublisher<Bool, Never> { get }
+    
+    var work: Time { get }
+    var rest: Time { get }
+    var round: Int { get }
 }
 
 
@@ -29,6 +37,7 @@ class RoundSettingsViewModel: RoundSettingsViewModelProtocol {
     @Published private(set) var work: Time
     @Published private(set) var rest: Time
     @Published private(set) var round: Int
+    @Published private(set) var isEnabled: Bool = true
     
     init(router: TimerScreenRouterProtocol) {
         self.router = router
@@ -73,6 +82,12 @@ class RoundSettingsViewModel: RoundSettingsViewModelProtocol {
             .compactMap{ $0 }
             .eraseToAnyPublisher()
     }
+    
+    var isEnabledPublisher: AnyPublisher<Bool, Never> {
+        $isEnabled
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
 
     func convert(minutes: Int, seconds: Int) -> String {
         var formattedMins: String = "\(minutes)"
@@ -106,6 +121,16 @@ class RoundSettingsViewModel: RoundSettingsViewModelProtocol {
             self.round = value
             UserDefaults.round = value
         }
+    }
+    
+    func updateCurrentSet(to workoutSet: InfoSetData) {
+        work = workoutSet.work
+        rest = workoutSet.rest
+        round = workoutSet.round
+    }
+    
+    func disable(_ disable: Bool) {
+        isEnabled = !disable
     }
 }
 
@@ -182,6 +207,31 @@ extension UserDefaults {
                 standard.set(data, forKey: "kRoundCount")
             } catch {
                 print("Rest did not save to UserDefaults. Error: \(error)")
+            }
+        }
+    }
+    
+    static var workoutSets: [InfoSetData] {
+        get {
+            guard let data = standard.data(forKey: "kSets") else {
+                return []
+            }
+            let value: [InfoSetData]
+            do {
+                let decoder = JSONDecoder()
+                value = try decoder.decode([InfoSetData].self, from: data)
+            } catch {
+                value = []
+            }
+            return value
+        }
+        set {
+            do {
+                let encoder = JSONEncoder()
+                let data = try encoder.encode(newValue)
+                standard.set(data, forKey: "kSets")
+            } catch {
+                print("Work did not save to UserDefaults. Error: \(error)")
             }
         }
     }

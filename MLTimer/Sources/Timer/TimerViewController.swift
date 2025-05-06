@@ -62,10 +62,8 @@ class TimerViewController: UIViewController {
         .sink { [unowned self] time, part in
             if time.seconds == 0 && time.minutes == 0 {
                 if part == RoundPart.work.rawValue {
-                    print("movies\(part)")
                     playSound(name: "rest")
                 } else if part == RoundPart.rest.rawValue {
-                    print("movies\(part)")
                     playSound(name: "bell")
                 }
             } else {
@@ -117,9 +115,6 @@ class TimerViewController: UIViewController {
         viewModel.stopPublisher
             .sink { [unowned self] isFinish in
                 if isFinish {
-                    roundSettingsVC.workView.isEnabled = true
-                    roundSettingsVC.restView.isEnabled = true
-                    roundSettingsVC.roundView.isEnabled = true
                     stopButton.isEnabled = false
                 }
             }
@@ -131,6 +126,8 @@ class TimerViewController: UIViewController {
         self.addChild(roundSettingsVC)
         mainStackView.addArrangedSubview(roundSettingsVC.view)
         roundSettingsVC.didMove(toParent: self)
+        
+        
         
         mainStackView.addArrangedSubview(spacerViewBeforeProgress)
         mainStackView.addArrangedSubview(countRoundStackView)
@@ -165,7 +162,9 @@ class TimerViewController: UIViewController {
 
         timeStackView.translatesAutoresizingMaskIntoConstraints = false
         progressView.widthAnchor.constraint(equalTo: progressView.heightAnchor).isActive = true
-        progressView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor).isActive = true
+        let progresLeading = progressView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor)
+        progresLeading.priority = .defaultHigh
+        progresLeading.isActive = true
 
         roundPartLable.translatesAutoresizingMaskIntoConstraints = false
         roundPartLable.bottomAnchor.constraint(equalTo: timeStackView.topAnchor, constant: -20).isActive = true
@@ -175,10 +174,10 @@ class TimerViewController: UIViewController {
         timeStackView.centerYAnchor.constraint(equalTo: progressView.centerYAnchor).isActive = true
         timeStackView.centerXAnchor.constraint(equalTo: progressView.centerXAnchor).isActive = true
 
-        startPauseButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        startPauseButton.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        stopButton.widthAnchor.constraint(equalToConstant: 70).isActive = true
-        stopButton.heightAnchor.constraint(equalToConstant: 70).isActive = true
+        startPauseButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        startPauseButton.heightAnchor.constraint(equalToConstant: 80).isActive = true
+        stopButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        stopButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
  
         minutesLabel.widthAnchor.constraint(equalTo: secondsLabel.widthAnchor).isActive = true
         colonLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
@@ -186,19 +185,20 @@ class TimerViewController: UIViewController {
     }
     
     func setupView() {
-        view.backgroundColor = UIColor.secondarySystemBackground
+        view.backgroundColor = .secondarySystemBackground
         mainStackView.alignment = .center
         mainStackView.axis = .vertical
+        mainStackView.spacing = 8
         
         countRoundStackView.axis = .horizontal
         countRoundStackView.alignment = .fill
-        countRoundStackView.spacing = 20
+        countRoundStackView.spacing = 16
 
         deviderLable.text = "/"
-        roundPartLable.font = UIFont.preferredFont(forTextStyle: .title1)
-        currentRoundLable.font = UIFont.preferredFont(forTextStyle: .largeTitle, compatibleWith: UITraitCollection(legibilityWeight: .bold))
-        totalRoundsLable.font = UIFont.preferredFont(forTextStyle: .title2, compatibleWith: UITraitCollection(legibilityWeight: .bold))
-        deviderLable.font = UIFont.preferredFont(forTextStyle: .title2, compatibleWith: UITraitCollection(legibilityWeight: .bold))
+        roundPartLable.font = UIFont.preferredFont(forTextStyle: .title2)
+        currentRoundLable.font = UIFont.preferredFont(forTextStyle: .title1, compatibleWith: UITraitCollection(legibilityWeight: .bold))
+        totalRoundsLable.font = UIFont.preferredFont(forTextStyle: .title3, compatibleWith: UITraitCollection(legibilityWeight: .bold))
+        deviderLable.font = UIFont.preferredFont(forTextStyle: .title3, compatibleWith: UITraitCollection(legibilityWeight: .bold))
         
         buttonsStackView.alignment = .center
         buttonsStackView.axis = .horizontal
@@ -211,14 +211,14 @@ class TimerViewController: UIViewController {
         timeStackView.axis = .horizontal
         timeStackView.spacing = 0
         
-        minutesLabel.font = UIFont(name: "Apple SD Gothic Neo", size: 90)
+        minutesLabel.font = UIFont(name: "Apple SD Gothic Neo", size: 80)
         minutesLabel.textAlignment = .right
         
         colonLabel.text = ":"
-        colonLabel.font = UIFont(name: "Apple SD Gothic Neo", size: 90)
+        colonLabel.font = UIFont(name: "Apple SD Gothic Neo", size: 80)
         colonLabel.textAlignment = .center
         
-        secondsLabel.font = UIFont(name: "Apple SD Gothic Neo", size: 90)
+        secondsLabel.font = UIFont(name: "Apple SD Gothic Neo", size: 80)
         secondsLabel.textAlignment = .left
 
         startPauseButton.addTarget(self, action: #selector(handleStartPauseDidTap), for: .touchUpInside)
@@ -226,17 +226,11 @@ class TimerViewController: UIViewController {
     }
     
     @objc func handleStartPauseDidTap() {
-        roundSettingsVC.workView.isEnabled = false
-        roundSettingsVC.restView.isEnabled = false
-        roundSettingsVC.roundView.isEnabled = false
         stopButton.isEnabled = true
         viewModel.playPause()
     }
     
     @objc func handleStopButtonDidTap() {
-        roundSettingsVC.workView.isEnabled = true
-        roundSettingsVC.restView.isEnabled = true
-        roundSettingsVC.roundView.isEnabled = true
         viewModel.stop()
         stopButton.isEnabled = false
     }
@@ -258,7 +252,7 @@ extension UIButton.Configuration {
     static var pause: Self {
         var config = Self.borderedProminent()
         config.image = .init(systemName: "pause.fill")
-        config.preferredSymbolConfigurationForImage = .init(pointSize: 40)
+        config.preferredSymbolConfigurationForImage = .init(pointSize: 30)
         config.baseForegroundColor = .white
         config.baseBackgroundColor = UIColor(resource: .accent)
         config.cornerStyle = .capsule
@@ -268,7 +262,7 @@ extension UIButton.Configuration {
     static var stop: Self {
         var config = Self.borderedProminent()
         config.image = .init(systemName: "stop.fill")
-        config.preferredSymbolConfigurationForImage = .init(pointSize: 30)
+        config.preferredSymbolConfigurationForImage = .init(pointSize: 20)
         config.baseForegroundColor = .white
         config.baseBackgroundColor = UIColor(resource: .stop)
         config.cornerStyle = .capsule
