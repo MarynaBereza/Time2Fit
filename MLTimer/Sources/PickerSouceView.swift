@@ -70,7 +70,7 @@ class PickerSouceView: BaseView {
         addGestureRecognizer(actionTap)
         updateUI()
         layer.cornerRadius = 5
-        
+        timeImageView.contentMode = .center
         stackView.axis = .vertical
         stackView.alignment = .leading
         stackView.spacing = 5
@@ -92,7 +92,6 @@ class PickerSouceView: BaseView {
     }
     
     @objc private func handleTap() {
-        
         guard isEnabled else {
             return
         }

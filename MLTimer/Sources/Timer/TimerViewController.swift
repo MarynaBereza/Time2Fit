@@ -51,7 +51,7 @@ class TimerViewController: UIViewController {
     }
     
     func playSound(name: String) {
-       soundPlayer = try? AVAudioPlayer(contentsOf: URL(fileURLWithPath: Bundle.main.path(forResource: name, ofType: "mp3")!))
+        soundPlayer = try? AVAudioPlayer(contentsOf: URL(fileURLWithPath: Bundle.main.path(forResource: name, ofType: "mp3")!))
         soundPlayer?.play()
     }
     
@@ -126,9 +126,7 @@ class TimerViewController: UIViewController {
         self.addChild(roundSettingsVC)
         mainStackView.addArrangedSubview(roundSettingsVC.view)
         roundSettingsVC.didMove(toParent: self)
-        
-        
-        
+
         mainStackView.addArrangedSubview(spacerViewBeforeProgress)
         mainStackView.addArrangedSubview(countRoundStackView)
         

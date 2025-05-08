@@ -12,7 +12,8 @@ protocol RoundSettingsViewModelProtocol {
     func showWorkTimePicker()
     func showRestTimePicker()
     func showRoundPicker()
-    func updateCurrentSet(to set: InfoSetData) 
+    func updateCurrentSet(to set: InfoSetData)
+    func removeWorkoutSet(index: Int)
     
     var workTimePublisher: AnyPublisher<String, Never> { get }
     var restTimePublisher: AnyPublisher<String, Never> { get }
@@ -131,6 +132,12 @@ class RoundSettingsViewModel: RoundSettingsViewModelProtocol {
     
     func disable(_ disable: Bool) {
         isEnabled = !disable
+    }
+    
+    func removeWorkoutSet(index: Int) {
+        var workoutSets = UserDefaults.workoutSets
+        workoutSets.remove(at: index)
+        UserDefaults.workoutSets = workoutSets
     }
 }
 
