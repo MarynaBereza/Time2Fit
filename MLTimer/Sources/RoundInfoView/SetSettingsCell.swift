@@ -10,6 +10,7 @@ import UIKit
 
 class SetSettingsCell: BaseView {
     private let stackView = UIStackView()
+    private let horizontalStackView = UIStackView()
     private let titleLabel = UILabel()
     private let timeLabel = UILabel()
     private let deleteImageView = UIImageView()
@@ -19,47 +20,45 @@ class SetSettingsCell: BaseView {
             deleteImageView.isHidden = !isEditingMode
         }
     }
-    
+
     override func setupHierarchy() {
         super.setupHierarchy()
         addSubview(stackView)
-        stackView.addArrangedSubview(titleLabel)
+        stackView.addArrangedSubview(horizontalStackView)
         stackView.addArrangedSubview(timeLabel)
-        addSubview(deleteImageView)
+        horizontalStackView.addArrangedSubview(titleLabel)
+        horizontalStackView.addArrangedSubview(deleteImageView)
     }
     
     override func setupLayout() {
         super.setupLayout()
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        deleteImageView.translatesAutoresizingMaskIntoConstraints = false
         stackView.topAnchor.constraint(equalTo: topAnchor, constant: 6).isActive = true
         stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -6).isActive = true
         stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12).isActive = true
         stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12).isActive = true
-        
-        deleteImageView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        deleteImageView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        deleteImageView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        deleteImageView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        deleteImageView.widthAnchor.constraint(equalTo: deleteImageView.heightAnchor, multiplier: 1).isActive = true
     }
     
     override func setupViews() {
         super.setupViews()
         
-        deleteImageView.image = UIImage(systemName: "trash")
+        horizontalStackView.axis = .horizontal
+        horizontalStackView.alignment = .center
+        horizontalStackView.spacing = 8
+        
+        deleteImageView.image = UIImage(systemName: "minus.circle")
         deleteImageView.tintColor = UIColor(resource: .stop)
         deleteImageView.contentMode = .center
-        deleteImageView.backgroundColor = .systemGray5.withAlphaComponent(0.5)
-
-
+        
         clipsToBounds = true
         layer.cornerRadius = 8
         backgroundColor = .systemFill
         
         stackView.axis = .vertical
-        stackView.alignment = .leading
+        stackView.alignment = .fill
         stackView.spacing = 2
-
+        
         titleLabel.textColor = .label
         timeLabel.textColor = .secondaryLabel
         titleLabel.font = UIFont.preferredFont(forTextStyle: .footnote, compatibleWith:  UITraitCollection(legibilityWeight: .bold))
@@ -73,5 +72,15 @@ class SetSettingsCell: BaseView {
         let rest = "\(info.rest.minutes.formattedTime):\(info.rest.seconds.formattedTime)"
         let round = info.round
         timeLabel.text = "\(work) | \(rest) | \(round)"
+        updateUI(isSelected: info.isSelected)
+    }
+    
+    func updateUI(isSelected: Bool) {
+        if isSelected {
+            layer.borderWidth = 1
+            layer.borderColor = UIColor.secondaryLabel.cgColor
+        } else {
+            layer.borderWidth = 0
+        }
     }
 }

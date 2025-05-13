@@ -8,12 +8,21 @@
 import Foundation
 import Combine
 
+struct InfoSetData: Hashable, Equatable, Codable {
+    let title: String
+    let work: Time
+    let rest: Time
+    let round: Int
+    var isSelected: Bool
+}
+
 protocol RoundSettingsViewModelProtocol {
     func showWorkTimePicker()
     func showRestTimePicker()
     func showRoundPicker()
-    func updateCurrentSet(to set: InfoSetData)
+    func updateCurrentSet(to set: InfoSetData?)
     func removeWorkoutSet(index: Int)
+    func saveSet(withTitle title : String)
     
     var workTimePublisher: AnyPublisher<String, Never> { get }
     var restTimePublisher: AnyPublisher<String, Never> { get }
@@ -23,6 +32,7 @@ protocol RoundSettingsViewModelProtocol {
     var roundDataPublisher: AnyPublisher<Int, Never> { get }
     
     var isEnabledPublisher: AnyPublisher<Bool, Never> { get }
+    var savedSetsPublisher: AnyPublisher<[InfoSetData], Never> { get }
     
     var work: Time { get }
     var rest: Time { get }
@@ -31,7 +41,7 @@ protocol RoundSettingsViewModelProtocol {
 
 
 class RoundSettingsViewModel: RoundSettingsViewModelProtocol {
-    
+
     let router: TimerScreenRouterProtocol
     let displayLinkTimer = DisplayLinkTimer()
     
@@ -39,6 +49,11 @@ class RoundSettingsViewModel: RoundSettingsViewModelProtocol {
     @Published private(set) var rest: Time
     @Published private(set) var round: Int
     @Published private(set) var isEnabled: Bool = true
+    @Published private(set) var savedSets = UserDefaults.workoutSets {
+        didSet {
+            UserDefaults.workoutSets = savedSets
+        }
+    }
     
     init(router: TimerScreenRouterProtocol) {
         self.router = router
@@ -50,8 +65,8 @@ class RoundSettingsViewModel: RoundSettingsViewModelProtocol {
     var workTimePublisher: AnyPublisher<String, Never> {
         $work
             .compactMap { $0 }
-            .map({ [unowned self] value in
-                self.convert(minutes: value.minutes, seconds: value.seconds)
+            .map({ value in
+                "\(value.minutes.formattedTime):\(value.seconds.formattedTime)"
             })
             .eraseToAnyPublisher()
     }
@@ -59,8 +74,8 @@ class RoundSettingsViewModel: RoundSettingsViewModelProtocol {
     var restTimePublisher: AnyPublisher<String, Never> {
         $rest
             .compactMap { $0 }
-            .map({ [unowned self] value in
-                self.convert(minutes: value.minutes, seconds: value.seconds)
+            .map({ value in
+                "\(value.minutes.formattedTime):\(value.seconds.formattedTime)"
             })
             .eraseToAnyPublisher()
     }
@@ -77,7 +92,6 @@ class RoundSettingsViewModel: RoundSettingsViewModelProtocol {
             .eraseToAnyPublisher()
     }
 
-    
     var roundDataPublisher: AnyPublisher<Int, Never> {
         $round
             .compactMap{ $0 }
@@ -89,55 +103,89 @@ class RoundSettingsViewModel: RoundSettingsViewModelProtocol {
             .removeDuplicates()
             .eraseToAnyPublisher()
     }
-
-    func convert(minutes: Int, seconds: Int) -> String {
-        var formattedMins: String = "\(minutes)"
-        var formattedSeconds: String = "\(seconds)"
-        if minutes <= 9 {
-            formattedMins = "0" + formattedMins
-        }
-
-        if seconds <= 9 {
-            formattedSeconds = "0" + formattedSeconds
-        }
-        return "\(formattedMins):\(formattedSeconds)"
+    
+    var savedSetsPublisher: AnyPublisher<[InfoSetData], Never> {
+        $savedSets
+            .removeDuplicates()
+            .eraseToAnyPublisher()
     }
     
     func showWorkTimePicker() {
-        router.routeToTimePickerWith(value: work) { value in
+        router.routeToTimePickerWith(value: work) { [weak self] value in
+            guard let self, self.work != value else { return }
             self.work = value
             UserDefaults.work = value
+            self.updateCurrentSet(to: nil)
         }
     }
 
     func showRestTimePicker() {
-        router.routeToTimePickerWith(value: rest) { value in
+        router.routeToTimePickerWith(value: rest) { [weak self] value in
+            guard let self, self.rest != value else { return }
             self.rest = value
             UserDefaults.rest = value
+            self.updateCurrentSet(to: nil)
         }
     }
     
     func showRoundPicker(){
-        router.routeToRoundPickerWith(value: round) { value in
+        router.routeToRoundPickerWith(value: round) { [weak self] value in
+            guard let self, self.round != value else { return }
             self.round = value
             UserDefaults.round = value
+            self.updateCurrentSet(to: nil)
         }
     }
     
-    func updateCurrentSet(to workoutSet: InfoSetData) {
+    func updateCurrentSet(to workoutSet: InfoSetData?) {
+        guard let workoutSet else {
+            savedSets = savedSets.map({ set in
+                var updatedSet =  set
+                updatedSet.isSelected = false
+                return updatedSet
+            })
+            return
+        }
         work = workoutSet.work
         rest = workoutSet.rest
         round = workoutSet.round
+        
+        savedSets = savedSets.map({ set in
+            var updatedSet =  set
+            updatedSet.isSelected = workoutSet == set
+            return updatedSet
+        })
     }
-    
+
     func disable(_ disable: Bool) {
         isEnabled = !disable
     }
     
     func removeWorkoutSet(index: Int) {
-        var workoutSets = UserDefaults.workoutSets
-        workoutSets.remove(at: index)
-        UserDefaults.workoutSets = workoutSets
+        savedSets.remove(at: index)
+    }
+    
+    func saveSet(withTitle title: String) {
+        var title = title
+        if title.isEmpty {
+            title = "MySet"
+        }
+        if savedSets.contains(where: { $0.title == title }) {
+            let filteredSets = savedSets.filter { set in
+                set.title.hasPrefix("\(title) ")
+            }
+            
+            let ints = filteredSets.compactMap { set in
+                var suffix = set.title
+                suffix.trimPrefix("\(title) ")
+                let int = Int(suffix)
+                return int
+            }
+            let int = ints.max() ?? 0
+            title = "\(title) \(int + 1)"
+        }
+        let newSet = InfoSetData(title: title, work: work, rest: rest, round: round, isSelected: false)
+        savedSets.insert(newSet, at: 0)
     }
 }
 

@@ -9,17 +9,9 @@ import Foundation
 import UIKit
 import Combine
 
-struct InfoSetData: Hashable, Equatable, Codable {
-    let title: String
-    let work: Time
-    let rest: Time
-    let round: Int
-}
-
 class RoundSettingsViewController: UIViewController {
     var isEditingSets: Bool = false
     let viewModel: RoundSettingsViewModelProtocol
-    
     let verticalStackView = UIStackView()
     let horizontalStackView = UIStackView()
     let workView = PickerSouceView()
@@ -43,22 +35,6 @@ class RoundSettingsViewController: UIViewController {
     typealias DataSource = UICollectionViewDiffableDataSource<Section, InfoSetData>
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, InfoSetData>
     typealias SetCell = Cell<SetSettingsCell>
-    
-    var savedSets = UserDefaults.workoutSets {
-        didSet {
-            let snapshot = createSnapshot(infoSets: savedSets)
-            dataSource.apply(snapshot, animatingDifferences: !savedSets.isEmpty)
-            editButton.isHidden = savedSets.isEmpty
-            saveWorkoutSetLabel.isHidden = !savedSets.isEmpty
-            editButton.titleLabel?.alpha = savedSets.isEmpty ? 0 : 1
-            saveWorkoutSetLabel.isHidden = !savedSets.isEmpty
-            if savedSets.isEmpty {
-                isEditingSets = false
-                addButton.isEnabled = true
-                editButton.setTitle("Edit", for: .normal)
-            }
-        }
-    }
 
     init(viewModel: RoundSettingsViewModelProtocol) {
         self.viewModel = viewModel
@@ -76,9 +52,6 @@ class RoundSettingsViewController: UIViewController {
         setupLayout()
         setupView()
         bindViewModel()
-        
-        let snapshot = createSnapshot(infoSets: savedSets)
-        dataSource.apply(snapshot)
     }
     
     func bindViewModel() {
@@ -100,6 +73,12 @@ class RoundSettingsViewController: UIViewController {
             }
             .store(in: &cancelables)
         
+        viewModel.isEnabledPublisher.combineLatest(viewModel.savedSetsPublisher.map{ $0.isEmpty })
+            .sink { [unowned self] isEnambled, isEmpty in
+                editButton.titleLabel?.alpha = (!isEmpty && isEnambled) ? 1 : 0
+            }
+            .store(in: &cancelables)
+        
         viewModel.isEnabledPublisher
             .sink { [unowned self] isEnabled in
                 workView.isEnabled = isEnabled
@@ -107,7 +86,7 @@ class RoundSettingsViewController: UIViewController {
                 roundView.isEnabled = isEnabled
                 collectionView.isUserInteractionEnabled = isEnabled
                 collectionView.alpha = isEnabled ? 1 : 0.5
-                editButton.titleLabel?.alpha = savedSets.isEmpty ? 0 : 1
+                
                 addButton.isEnabled = isEnabled
                 editButton.isUserInteractionEnabled = isEnabled
                 editButton.titleLabel?.textColor = isEnabled ? UIColor(resource: .stop) : .secondaryLabel
@@ -118,33 +97,30 @@ class RoundSettingsViewController: UIViewController {
                 }
             }
             .store(in: &cancelables)
+        
+        viewModel.savedSetsPublisher
+            .sink { [unowned self] savedSets in
+                let snapshot = createSnapshot(infoSets: savedSets)
+                dataSource.apply(snapshot, animatingDifferences: !savedSets.isEmpty)
+                editButton.isHidden = savedSets.isEmpty
+                saveWorkoutSetLabel.isHidden = !savedSets.isEmpty
+                editButton.titleLabel?.alpha = savedSets.isEmpty ? 0 : 1
+                saveWorkoutSetLabel.isHidden = !savedSets.isEmpty
+                if savedSets.isEmpty {
+                    isEditingSets = false
+                    addButton.isEnabled = true
+                    editButton.setTitle("Edit", for: .normal)
+                }
+                saveWorkoutSetLabel.isHidden = !savedSets.isEmpty
+            }
+            .store(in: &cancelables)
     }
 
     @objc func addNewWorkoutSetTapped() {
         let alert = UIAlertController(title: "Set title", message: nil, preferredStyle: .alert)
-
         let saveAction = UIAlertAction(title: "Save", style: .default) { [unowned self] _ in
-            
-            var workoutSets = UserDefaults.workoutSets
-
-            var setTitle = alert.textFields?[0].text ?? ""
-            if setTitle.isEmpty {
-                setTitle = "Set \(workoutSets.count)"
-            }
-            let newSet = InfoSetData(title: setTitle, work: viewModel.work, rest: viewModel.rest, round: viewModel.round)
-            
-            let isDublicated = workoutSets.contains(newSet)
-            
-            if !isDublicated {
-                workoutSets.insert(newSet, at: 0)
-                UserDefaults.workoutSets = workoutSets
-                savedSets = workoutSets
-            } else {
-                let alertNotif = UIAlertController(title: "Error", message: "Please create unique set or enter the title.", preferredStyle: .alert)
-                let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-                alertNotif.addAction(cancelAction)
-                present(alertNotif, animated: true)
-            }
+            let setTitle = alert.textFields?[0].text ?? ""
+            viewModel.saveSet(withTitle: setTitle)
         }
         
         alert.addTextField { (textField) in
@@ -200,9 +176,7 @@ class RoundSettingsViewController: UIViewController {
         SetCell.register(in: collectionView)
         collectionView.backgroundColor = .secondarySystemBackground
         collectionView.bouncesVertically = false
-        
-        saveWorkoutSetLabel.isHidden = !savedSets.isEmpty
-        
+    
         horizontalEditStackView.axis = .horizontal
         horizontalEditStackView.spacing = 10
         horizontalEditStackView.alignment = .fill
@@ -215,8 +189,6 @@ class RoundSettingsViewController: UIViewController {
         editButton.addTarget(self, action: #selector(editHandleTap), for: .touchUpInside)
         editButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .caption2, compatibleWith: UITraitCollection(legibilityWeight: .bold))
         editButton.setTitleColor(UIColor(resource: .stop), for: .normal)
-        
-        addButton.layer.cornerRadius = 8
         
         saveWorkoutSetLabel.text = "Tap plus to save current settings workout set."
         saveWorkoutSetLabel.numberOfLines = 2
@@ -237,6 +209,7 @@ class RoundSettingsViewController: UIViewController {
         horizontalSetStackView.axis = .horizontal
         horizontalSetStackView.spacing = 16
 
+        addButton.layer.cornerRadius = 8
         addButton.setImage(UIImage(systemName: "plus")?.withConfiguration(UIImage.SymbolConfiguration(font: .boldSystemFont(ofSize: 20))), for: .normal)
         addButton.backgroundColor = .systemFill
         addButton.addTarget(self, action: #selector(addNewWorkoutSetTapped), for: .touchUpInside)
@@ -303,12 +276,13 @@ class RoundSettingsViewController: UIViewController {
 extension RoundSettingsViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
-        
+        collectionView.deselectItem(at: indexPath, animated: false)
+ 
         if isEditingSets  {
             viewModel.removeWorkoutSet(index: indexPath.row)
-            savedSets = UserDefaults.workoutSets
         } else {
+            guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+            collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
             viewModel.updateCurrentSet(to: item)
         }
     }
