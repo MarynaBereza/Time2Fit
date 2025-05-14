@@ -10,7 +10,6 @@ import UIKit
 import Combine
 
 class RoundSettingsViewController: UIViewController {
-    var isEditingSets: Bool = false
     let viewModel: RoundSettingsViewModelProtocol
     let verticalStackView = UIStackView()
     let horizontalStackView = UIStackView()
@@ -90,9 +89,9 @@ class RoundSettingsViewController: UIViewController {
                 addButton.isEnabled = isEnabled
                 editButton.isUserInteractionEnabled = isEnabled
                 editButton.titleLabel?.textColor = isEnabled ? UIColor(resource: .stop) : .secondaryLabel
-                if isEditingSets {
+                if editButton.isSelected {
                     editButton.setTitle("Edit", for: .normal)
-                    isEditingSets = false
+                    editButton.isSelected.toggle()
                     collectionView.reloadData()
                 }
             }
@@ -107,7 +106,7 @@ class RoundSettingsViewController: UIViewController {
                 editButton.titleLabel?.alpha = savedSets.isEmpty ? 0 : 1
                 saveWorkoutSetLabel.isHidden = !savedSets.isEmpty
                 if savedSets.isEmpty {
-                    isEditingSets = false
+                    editButton.isSelected = false
                     addButton.isEnabled = true
                     editButton.setTitle("Edit", for: .normal)
                 }
@@ -133,9 +132,8 @@ class RoundSettingsViewController: UIViewController {
     }
     
     @objc func editHandleTap(sender: UIButton) {
-        isEditingSets.toggle()
+        editButton.isSelected.toggle()
         collectionView.reloadData()
-        sender.isSelected = isEditingSets
         addButton.isEnabled = sender.isSelected ? false : true
         
         let title = sender.isSelected ? "Done" : "Edit"
@@ -238,10 +236,10 @@ class RoundSettingsViewController: UIViewController {
     // MARK: - CollectionView
     func configureCollectionViewLayout() -> UICollectionViewLayout {
         
-        let itemSize = NSCollectionLayoutSize(widthDimension: .estimated(1), heightDimension: .fractionalHeight(1))
+        let itemSize = NSCollectionLayoutSize(widthDimension: .estimated(120), heightDimension: .fractionalHeight(1))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .estimated(1), heightDimension: .fractionalHeight(1))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .estimated(120), heightDimension: .fractionalHeight(1))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 10)
         let section = NSCollectionLayoutSection(group: group)
@@ -266,7 +264,7 @@ class RoundSettingsViewController: UIViewController {
         let dataSource = DataSource(collectionView: collectionView) { [weak self] collectionView, indexPath, item in
             let cell = SetCell.dequeue(from: collectionView, for: indexPath)
             cell.rootView.updateData(info: item)
-            cell.rootView.isEditingMode = self?.isEditingSets ?? false
+            cell.rootView.isEditingMode = self?.editButton.isSelected ?? false
             return cell
         }
         return dataSource
@@ -278,7 +276,7 @@ extension RoundSettingsViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: false)
  
-        if isEditingSets  {
+        if editButton.isSelected {
             viewModel.removeWorkoutSet(index: indexPath.row)
         } else {
             guard let item = dataSource.itemIdentifier(for: indexPath) else { return }

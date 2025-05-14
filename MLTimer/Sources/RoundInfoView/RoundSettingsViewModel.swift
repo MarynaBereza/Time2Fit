@@ -151,7 +151,7 @@ class RoundSettingsViewModel: RoundSettingsViewModelProtocol {
         round = workoutSet.round
         
         savedSets = savedSets.map({ set in
-            var updatedSet =  set
+            var updatedSet = set
             updatedSet.isSelected = workoutSet == set
             return updatedSet
         })

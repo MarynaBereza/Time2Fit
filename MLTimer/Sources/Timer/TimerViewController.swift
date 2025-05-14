@@ -102,6 +102,7 @@ class TimerViewController: UIViewController {
         
         viewModel.isContinuePublisher
             .sink { [unowned self] isContinue in
+                UIApplication.shared.isIdleTimerDisabled = isContinue
                 startPauseButton.configuration = isContinue == true ? .pause : .play
             }
             .store(in: &cancellables)
