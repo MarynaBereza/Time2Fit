@@ -63,7 +63,7 @@ class TimerViewController: UIViewController {
             if time.seconds == 0 && time.minutes == 0 {
                 if part == RoundPart.work.rawValue {
                     playSound(name: "rest")
-                } else if part == RoundPart.rest.rawValue {
+                } else if part == RoundPart.rest.rawValue || part.isEmpty {
                     playSound(name: "bell")
                 }
             } else {
@@ -96,7 +96,12 @@ class TimerViewController: UIViewController {
         
         viewModel.currentNumberRoundPublisher
             .sink { [unowned self] currentRound in
-                currentRoundLable.text = "\(currentRound)"
+                if currentRound == 0 {
+                    countRoundStackView.alpha = 0
+                } else {
+                    currentRoundLable.text = "\(currentRound)"
+                    countRoundStackView.alpha = 1
+                }
             }
             .store(in: &cancellables)
         

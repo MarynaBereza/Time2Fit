@@ -54,8 +54,8 @@ class TimerViewModel: TimerViewModelProtocol {
     private lazy var _settingsViewModel = RoundSettingsViewModel(router: router)
     let router: TimerScreenRouterProtocol
     
-    @Published private(set) var roundPart: RoundPart = .work
-    @Published private(set) var currentNumberRound = 1
+    @Published private(set) var roundPart: RoundPart = .rest
+    @Published private(set) var currentNumberRound = 0
     @Published private(set) var workTime = 0.0
     @Published private(set) var restTime = 0.0
     @Published private(set) var totalRounds = 1
@@ -84,7 +84,14 @@ class TimerViewModel: TimerViewModelProtocol {
     
     var remainingTimePublisher: AnyPublisher<Time, Never> {
         displayLinkTimer.$remainingTime
-            .map { Time(seconds: $0) }
+            .combineLatest($workTime)
+            .map { remainingTime, workTime in
+                if remainingTime == 3 {
+                    return Time(seconds: workTime)
+                } else {
+                    return Time(seconds: remainingTime)
+                }
+            }
             .removeDuplicates()
             .eraseToAnyPublisher()
     }
@@ -109,7 +116,15 @@ class TimerViewModel: TimerViewModelProtocol {
     
     var roundPartPublisher: AnyPublisher<String, Never> {
         $roundPart
-            .map { "\($0.rawValue)" }
+            .combineLatest($currentNumberRound)
+            .map { part, round in
+                if round == 0 {
+                    ""
+                } else {
+                    part.rawValue
+                }
+                
+            }
             .eraseToAnyPublisher()
     }
     
@@ -146,7 +161,7 @@ class TimerViewModel: TimerViewModelProtocol {
         
     func stop() {
         isStoppedByUser = true
-        displayLinkTimer.setup(duration: workTime)
+        displayLinkTimer.setup(duration: 3)
         _settingsViewModel.disable(false)
     }
     
@@ -157,7 +172,7 @@ class TimerViewModel: TimerViewModelProtocol {
             .sink { [unowned self] value in
                 let totalSeconds = value.minutes * 60 + value.seconds
                 workTime = Double(totalSeconds)
-                displayLinkTimer.setup(duration: Double(totalSeconds))
+                displayLinkTimer.setup(duration: 3)
             }
             .store(in: &cancellables)
         _settingsViewModel.$rest
@@ -174,7 +189,7 @@ class TimerViewModel: TimerViewModelProtocol {
     }
     
     private func setupTimer() {
-        displayLinkTimer.setup(duration: workTime)
+        displayLinkTimer.setup(duration: 3)
         displayLinkTimer.$state
             .removeDuplicates()
             .filter { $0 == .stopped }
@@ -196,8 +211,8 @@ class TimerViewModel: TimerViewModelProtocol {
                 }
                 
                 if (isLastRound && roundPart == .rest) || isStoppedByUser {
-                    roundPart = .work
-                    currentNumberRound = 1
+                    roundPart = .rest
+                    currentNumberRound = 0
                     stopTapped = true
                 }
                 guard !isStoppedByUser else {
