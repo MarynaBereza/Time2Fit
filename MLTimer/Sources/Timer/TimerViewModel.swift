@@ -18,10 +18,11 @@ protocol TimerViewModelProtocol {
     var currentNumberRoundPublisher: AnyPublisher<Int, Never> { get }
     var isContinuePublisher: AnyPublisher<Bool, Never> { get }
     var totalRoundPublisher: AnyPublisher<Int, Never> { get }
-    func playPause()
-    func stop()
     var settingsViewModel: RoundSettingsViewModelProtocol { get }
     var stopPublisher: AnyPublisher<Bool, Never> { get }
+    
+    func playPause()
+    func stop()
 }
 
 struct Time: Equatable, Codable, Hashable {
@@ -48,12 +49,13 @@ class TimerViewModel: TimerViewModelProtocol {
 
     // MARK: State
     private var isStoppedByUser = false
+    private var preparingTime = 3.0
     private var cancellables = Set<AnyCancellable>()
-    let displayLinkTimer = DisplayLinkTimer()
-    var settingsViewModel: RoundSettingsViewModelProtocol { _settingsViewModel }
     private lazy var _settingsViewModel = RoundSettingsViewModel(router: router)
+    let displayLinkTimer = DisplayLinkTimer()
     let router: TimerScreenRouterProtocol
-    
+    var settingsViewModel: RoundSettingsViewModelProtocol { _settingsViewModel }
+
     @Published private(set) var roundPart: RoundPart = .rest
     @Published private(set) var currentNumberRound = 0
     @Published private(set) var workTime = 0.0
@@ -61,11 +63,6 @@ class TimerViewModel: TimerViewModelProtocol {
     @Published private(set) var totalRounds = 1
     @Published private(set) var stopTapped = false
  
-    var stopPublisher: AnyPublisher<Bool, Never> {
-        $stopTapped
-            .map { $0 }
-            .eraseToAnyPublisher()
-    }
     // MARK: Initialization
     
     init(router: TimerScreenRouterProtocol) {
@@ -85,8 +82,8 @@ class TimerViewModel: TimerViewModelProtocol {
     var remainingTimePublisher: AnyPublisher<Time, Never> {
         displayLinkTimer.$remainingTime
             .combineLatest($workTime)
-            .map { remainingTime, workTime in
-                if remainingTime == 3 {
+            .map { [unowned self] remainingTime, workTime in
+                if remainingTime == preparingTime {
                     return Time(seconds: workTime)
                 } else {
                     return Time(seconds: remainingTime)
@@ -123,7 +120,6 @@ class TimerViewModel: TimerViewModelProtocol {
                 } else {
                     part.rawValue
                 }
-                
             }
             .eraseToAnyPublisher()
     }
@@ -147,6 +143,12 @@ class TimerViewModel: TimerViewModelProtocol {
             .debounce(for: 0.1, scheduler: RunLoop.main)
             .eraseToAnyPublisher()
     }
+    
+    var stopPublisher: AnyPublisher<Bool, Never> {
+        $stopTapped
+            .map { $0 }
+            .eraseToAnyPublisher()
+    }
 
     // MARK: Actions
 
@@ -161,7 +163,7 @@ class TimerViewModel: TimerViewModelProtocol {
         
     func stop() {
         isStoppedByUser = true
-        displayLinkTimer.setup(duration: 3)
+        displayLinkTimer.setup(duration: preparingTime)
         _settingsViewModel.disable(false)
     }
     
@@ -172,7 +174,7 @@ class TimerViewModel: TimerViewModelProtocol {
             .sink { [unowned self] value in
                 let totalSeconds = value.minutes * 60 + value.seconds
                 workTime = Double(totalSeconds)
-                displayLinkTimer.setup(duration: 3)
+                displayLinkTimer.setup(duration: preparingTime)
             }
             .store(in: &cancellables)
         _settingsViewModel.$rest
@@ -189,7 +191,7 @@ class TimerViewModel: TimerViewModelProtocol {
     }
     
     private func setupTimer() {
-        displayLinkTimer.setup(duration: 3)
+        displayLinkTimer.setup(duration: preparingTime)
         displayLinkTimer.$state
             .removeDuplicates()
             .filter { $0 == .stopped }
@@ -204,12 +206,10 @@ class TimerViewModel: TimerViewModelProtocol {
                 if !isStoppedByUser {
                     displayLinkTimer.setup(duration: duration)
                 }
-
                 let isLastRound = currentNumberRound == totalRounds
                 if isLastRound && roundPart == .rest {
                     stop()
                 }
-                
                 if (isLastRound && roundPart == .rest) || isStoppedByUser {
                     roundPart = .rest
                     currentNumberRound = 0

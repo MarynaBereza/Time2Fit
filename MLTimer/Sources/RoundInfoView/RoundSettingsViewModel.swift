@@ -57,11 +57,19 @@ class RoundSettingsViewModel: RoundSettingsViewModelProtocol {
     
     init(router: TimerScreenRouterProtocol) {
         self.router = router
-        self.work = UserDefaults.work
-        self.rest = UserDefaults.rest
-        self.round = UserDefaults.round
+        let sets = UserDefaults.workoutSets
+        let selectedSet = sets.first { $0.isSelected == true }
+        if let selectedSet {
+            self.work = selectedSet.work
+            self.rest = selectedSet.rest
+            self.round = selectedSet.round
+        } else {
+            self.work = UserDefaults.work
+            self.rest = UserDefaults.rest
+            self.round = UserDefaults.round
+        }
     }
-    
+
     var workTimePublisher: AnyPublisher<String, Never> {
         $work
             .compactMap { $0 }

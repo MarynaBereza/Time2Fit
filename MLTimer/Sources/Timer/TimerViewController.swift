@@ -51,8 +51,10 @@ class TimerViewController: UIViewController {
     }
     
     func playSound(name: String) {
-        soundPlayer = try? AVAudioPlayer(contentsOf: URL(fileURLWithPath: Bundle.main.path(forResource: name, ofType: "mp3")!))
-        soundPlayer?.play()
+        DispatchQueue.global().async {
+            self.soundPlayer = try? AVAudioPlayer(contentsOf: URL(fileURLWithPath: Bundle.main.path(forResource: name, ofType: "mp3")!))
+            self.soundPlayer?.play()
+        }
     }
     
     func bindViewModel() {
@@ -67,6 +69,9 @@ class TimerViewController: UIViewController {
                     playSound(name: "bell")
                 }
             } else {
+                if time.seconds == 3 && time.minutes == 0 {
+                    playSound(name: "tick3")
+                }
                 minutesLabel.text = time.minutes.formattedTime
                 secondsLabel.text = time.seconds.formattedTime
             }
@@ -122,6 +127,7 @@ class TimerViewController: UIViewController {
             .sink { [unowned self] isFinish in
                 if isFinish {
                     stopButton.isEnabled = false
+                    soundPlayer = nil
                 }
             }
             .store(in: &cancellables)

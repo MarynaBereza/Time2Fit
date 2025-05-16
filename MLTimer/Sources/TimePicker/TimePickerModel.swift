@@ -15,7 +15,6 @@ protocol TimePickerModelProtocol {
     
     func confirm()
     func updateSelectedRow(_ row: Int, inComponent component: Int)
-    
     func checkSelection(row: Int, comp: Int) -> (row: Int, component: Int)
 }
 
