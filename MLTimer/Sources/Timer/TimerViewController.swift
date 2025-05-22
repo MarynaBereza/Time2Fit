@@ -164,17 +164,19 @@ class TimerViewController: UIViewController {
         mainStackView.translatesAutoresizingMaskIntoConstraints = false
         mainStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         mainStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
-        mainStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20).isActive = true
-        mainStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
+        mainStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        mainStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         
         roundSettingsVC.view.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor).isActive = true
         roundSettingsVC.view.trailingAnchor.constraint(equalTo: mainStackView.trailingAnchor).isActive = true
 
         timeStackView.translatesAutoresizingMaskIntoConstraints = false
         progressView.widthAnchor.constraint(equalTo: progressView.heightAnchor).isActive = true
-        let progresLeading = progressView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor)
+        
+        let progresLeading = progressView.leadingAnchor.constraint(equalTo: mainStackView.leadingAnchor, constant: 20)
         progresLeading.priority = .defaultHigh
         progresLeading.isActive = true
+        progressView.widthAnchor.constraint(lessThanOrEqualToConstant: 350).isActive = true
 
         roundPartLable.translatesAutoresizingMaskIntoConstraints = false
         roundPartLable.bottomAnchor.constraint(equalTo: timeStackView.topAnchor, constant: -20).isActive = true
@@ -221,14 +223,14 @@ class TimerViewController: UIViewController {
         timeStackView.axis = .horizontal
         timeStackView.spacing = 0
         
-        minutesLabel.font = UIFont(name: "Apple SD Gothic Neo", size: 80)
+        minutesLabel.font = UIFont.monospacedDigitSystemFont(ofSize: 80, weight: .light)
         minutesLabel.textAlignment = .right
         
         colonLabel.text = ":"
-        colonLabel.font = UIFont(name: "Apple SD Gothic Neo", size: 80)
+        colonLabel.font = UIFont.monospacedDigitSystemFont(ofSize: 80, weight: .light)
         colonLabel.textAlignment = .center
         
-        secondsLabel.font = UIFont(name: "Apple SD Gothic Neo", size: 80)
+        secondsLabel.font = UIFont.monospacedDigitSystemFont(ofSize: 80, weight: .light)
         secondsLabel.textAlignment = .left
 
         startPauseButton.addTarget(self, action: #selector(handleStartPauseDidTap), for: .touchUpInside)

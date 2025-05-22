@@ -33,6 +33,6 @@ class RoundPickerModel: RoundPickerModelProtocol {
 }
 
 extension RoundPickerModel {
-    var rounds: [Int] { (1...10).map { $0 } }
+    var rounds: [Int] { (1...50).map { $0 } }
 }
 

@@ -163,7 +163,12 @@ class RoundSettingsViewController: UIViewController {
         verticalStackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         verticalStackView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         verticalStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        verticalStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        verticalStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20).isActive = true
+        
+        horizontalStackView.trailingAnchor.constraint(equalTo: verticalStackView.trailingAnchor, constant: -20).isActive = true
+        horizontalEditStackView.trailingAnchor.constraint(equalTo: verticalStackView.trailingAnchor, constant: -20).isActive = true
+        horizontalSetStackView.trailingAnchor.constraint(equalTo: verticalStackView.trailingAnchor, constant: 0).isActive = true
+        
         horizontalEditStackView.heightAnchor.constraint(equalToConstant: 30).isActive = true
         collectionView.heightAnchor.constraint(equalToConstant: 50).isActive = true
         addButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
@@ -193,7 +198,7 @@ class RoundSettingsViewController: UIViewController {
         saveWorkoutSetLabel.font = UIFont.preferredFont(forTextStyle: .footnote)
         saveWorkoutSetLabel.textColor = .secondaryLabel
         
-        verticalStackView.alignment = .fill
+        verticalStackView.alignment = .leading
         verticalStackView.axis = .vertical
         verticalStackView.spacing = 8
         verticalStackView.setCustomSpacing(0, after: horizontalEditStackView)

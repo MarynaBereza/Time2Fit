@@ -68,6 +68,6 @@ class TimePickerModel: TimePickerModelProtocol {
 }
 
 extension TimePickerModel {
-    var minutes: [Int] { (0..<30).map { $0 } }
+    var minutes: [Int] { (0..<31).map { $0 } }
     var seconds: [Int] { Array(stride(from: 0, through: 55, by: 5))}
 }
