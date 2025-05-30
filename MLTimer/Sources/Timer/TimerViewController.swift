@@ -58,26 +58,28 @@ class TimerViewController: UIViewController {
     }
     
     func bindViewModel() {
-        
-        Publishers.CombineLatest(viewModel.remainingTimePublisher,
-                                 viewModel.roundPartPublisher)
-        .sink { [unowned self] time, part in
+        Publishers.CombineLatest3(viewModel.remainingTimePublisher,
+                                  viewModel.roundPartPublisher,
+                                  viewModel.isLastRoundPublisher)
+        .sink { [unowned self] time, part, isLast in
             if time.seconds == 0 && time.minutes == 0 {
-                if part == RoundPart.work.rawValue {
+                if part == RoundPart.work.rawValue && !isLast {
                     playSound(name: "rest")
                 } else if part == RoundPart.rest.rawValue || part.isEmpty {
                     playSound(name: "bell")
+                } else if isLast {
+                    playSound(name: "bell3")
                 }
             } else {
-                if time.seconds == 3 && time.minutes == 0 {
-                    playSound(name: "tick3")
+                if (time.seconds == 3 || time.seconds == 2 || time.seconds == 1) && time.minutes == 0 {
+                    playSound(name: "tick")
                 }
                 minutesLabel.text = time.minutes.formattedTime
                 secondsLabel.text = time.seconds.formattedTime
             }
         }
         .store(in: &cancellables)
-  
+        
         viewModel.settingsViewModel.workTimerPublisher
             .sink { [unowned self] time in
                 minutesLabel.text = time.minutes.formattedTime
@@ -127,7 +129,6 @@ class TimerViewController: UIViewController {
             .sink { [unowned self] isFinish in
                 if isFinish {
                     stopButton.isEnabled = false
-                    soundPlayer = nil
                 }
             }
             .store(in: &cancellables)

@@ -20,6 +20,7 @@ protocol TimerViewModelProtocol {
     var totalRoundPublisher: AnyPublisher<Int, Never> { get }
     var settingsViewModel: RoundSettingsViewModelProtocol { get }
     var stopPublisher: AnyPublisher<Bool, Never> { get }
+    var isLastRoundPublisher: AnyPublisher<Bool, Never> { get }
     
     func playPause()
     func stop()
@@ -62,6 +63,7 @@ class TimerViewModel: TimerViewModelProtocol {
     @Published private(set) var restTime = 0.0
     @Published private(set) var totalRounds = 1
     @Published private(set) var stopTapped = false
+    @Published private(set) var isLastRound = false
  
     // MARK: Initialization
     
@@ -149,6 +151,12 @@ class TimerViewModel: TimerViewModelProtocol {
             .map { $0 }
             .eraseToAnyPublisher()
     }
+    
+    var isLastRoundPublisher: AnyPublisher<Bool, Never> {
+        $isLastRound
+            .map { $0 }
+            .eraseToAnyPublisher()
+    }
 
     // MARK: Actions
 
@@ -206,7 +214,7 @@ class TimerViewModel: TimerViewModelProtocol {
                 if !isStoppedByUser {
                     displayLinkTimer.setup(duration: duration)
                 }
-                let isLastRound = currentNumberRound == totalRounds
+                isLastRound = currentNumberRound == totalRounds
                 if isLastRound && roundPart == .rest {
                     stop()
                 }
